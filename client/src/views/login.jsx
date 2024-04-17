@@ -1,4 +1,4 @@
-import { Heading,Box,Image,Text,Input,Button } from "@chakra-ui/react"
+import { Heading,Box,Image,Text,Input,Button,useToast} from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import axios from "axios"
 
@@ -7,34 +7,41 @@ const Login = ()=>{
 const [email,setEmail] = useState("");
 const [isValid,setIsValid] = useState(false)
 const [isTouched, setIsTouched] = useState(false); 
-const [SubmissionMessage, setSubmissionMessage] = useState("");
+const [isLoading, setIsLoading] = useState(false);
+const toast = useToast();
 
 const handleChange = (e) => {
     setEmail(e.target.value);
     setIsValid(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email));
     setIsTouched(true)
 }
-const handleSubmit =  async(e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true)
     if (isValid && isTouched && email) {
         try {
-          const response = await axios.post('http://127.0.0.1:8000/api/login', {
-            email: email
-          });
-          setSubmissionMessage('OTP message sent successfully');
-          console.log('API Response:', response.data);
+            const response = await axios.post('http://127.0.0.1:8000/api/login', { email });
+            console.log('API Response:', response.data);
+            toast({
+                description: 'Message envoyé avec succès.',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            });
         } catch (error) {
-          setSubmissionMessage('Email not found.');
-          console.error('API Error:', error.response ? error.response.data : error.message);
+            const errorMessage = error.response ? error.response.data : error.message;
+            console.error('API Error:', errorMessage);
+            toast({
+                description: 'Email introuvable.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+        }finally{
+            setIsLoading(false)
         }
-      } else {
-        setSubmissionMessage('Please enter a valid email before submitting.');
-      }
-    };
-    useEffect(()=>{    
-    console.log(SubmissionMessage);
-  },[SubmissionMessage]);
-
+    }
+};
     return(
         <div className="p-3">
             <Box boxSize="200px" h="20">
@@ -47,7 +54,7 @@ const handleSubmit =  async(e) => {
                 </div>
                 <form className="flex flex-col justify-center gap-6 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5" onSubmit={handleSubmit}>
                     <Input variant='outline' placeholder='Email' isInvalid={!isValid && isTouched} value={email} onChange={handleChange} />
-                    <Button colorScheme='facebook' type="submit"  isDisabled={!isValid}>Envoyer</Button>
+                    <Button colorScheme='facebook' type="submit" isLoading={isLoading} isDisabled={!isValid}>Envoyer</Button>
                 </form>
             </div>
         </div>
