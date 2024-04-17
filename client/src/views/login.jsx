@@ -4,11 +4,13 @@ import { useState } from "react"
 const Login = ()=>{
 
 const [email,setEmail] = useState("");
-const [isValid,setIsValid] = useState("true")
+const [isValid,setIsValid] = useState(false)
+const [isTouched, setIsTouched] = useState(false); 
 
 const handleChange = (e) => {
     setEmail(e.target.value);
     setIsValid(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email));
+    setIsTouched(true)
 }
 
 const handleSubmit = (e) => {
@@ -26,8 +28,8 @@ const handleSubmit = (e) => {
                     <span className="bg-[#0F4493] w-20 h-0.5"></span>
                 </div>
                 <div className="flex flex-col justify-center gap-6 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5">
-                    <Input variant='outline' placeholder='Email' name="email" isInvalid={!isValid} value={email} onChange={handleChange} />
-                    <Button colorScheme='facebook' isDisabled={!isValid}>Envoyer</Button>
+                    <Input variant='outline' placeholder='Email' name="email" isInvalid={!isValid && isTouched} value={email} onChange={handleChange} />
+                    <Button colorScheme='facebook'  isDisabled={!isValid}>Envoyer</Button>
                 </div>
             </div>
         </div>
