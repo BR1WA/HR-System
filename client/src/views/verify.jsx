@@ -1,24 +1,21 @@
 import { Heading,Box,Image,Input,Button,useToast} from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import userSlice, { addEmail } from '../features/user/userSlice';
+import { useSelector } from 'react-redux';
 
-const Login = ()=>{
+const Verify = ()=>{
 
-const [email,setEmail] = useState("");
+const [email,setEmail] = useState(useSelector((state) => state.user.email));
 const [isValid,setIsValid] = useState(false)
 const [isTouched, setIsTouched] = useState(false); 
 const [isLoading, setIsLoading] = useState(false);
 const toast = useToast();
-const navigate = useNavigate();
-const dispatch = useDispatch();
 
 const handleChange = (e) => {
-    setEmail(e.target.value);
-    setIsValid(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email));
-    setIsTouched(true)
+    const newEmail = e.target.value;
+    setEmail(newEmail); // Update email
+    setIsValid(/^\d{6}$/.test(newEmail)); // Validate the new value directly
+    setIsTouched(true); // Mark as touched
 }
 const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,9 +40,7 @@ const handleSubmit = async (e) => {
                 isClosable: true,
             });
         }finally{
-            setIsLoading(false);
-            dispatch(addEmail(email))
-            navigate('/verify');
+            setIsLoading(false)
         }
     }
 };
@@ -60,11 +55,11 @@ const handleSubmit = async (e) => {
                     <span className="bg-[#0F4493] w-20 h-0.5"></span>
                 </div>
                 <form className="flex flex-col justify-center gap-6 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5" onSubmit={handleSubmit}>
-                    <Input variant='outline' placeholder='Email' isInvalid={!isValid && isTouched} value={email} onChange={handleChange} />
-                    <Button colorScheme='facebook' type="submit" isLoading={isLoading} isDisabled={!isValid}>Envoyer</Button>
+                    <Input variant='outline' placeholder='code de 6 chiffres' isInvalid={!isValid && isTouched} value={email} onChange={handleChange} />
+                    <Button colorScheme='facebook' type="submit" isLoading={isLoading} isDisabled={!isValid}>Se Connecter</Button>
                 </form>
             </div>
         </div>
     )
 }
-export default Login
+export default Verify
