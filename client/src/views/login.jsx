@@ -33,6 +33,8 @@ const handleSubmit = async (e) => {
                 duration: 9000,
                 isClosable: true,
             });
+            dispatch(addEmail(email))
+            navigate('/verify');
         } catch (error) {
             const errorMessage = error.response ? error.response.data : error.message;
             console.error('API Error:', errorMessage);
@@ -44,8 +46,6 @@ const handleSubmit = async (e) => {
             });
         }finally{
             setIsLoading(false);
-            dispatch(addEmail(email))
-            navigate('/verify');
         }
     }
 };

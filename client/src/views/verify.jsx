@@ -5,42 +5,44 @@ import { useSelector } from 'react-redux';
 
 const Verify = ()=>{
 
-const [email,setEmail] = useState(useSelector((state) => state.user.email));
+const [code,setCode] = useState("");
 const [isValid,setIsValid] = useState(false)
 const [isTouched, setIsTouched] = useState(false); 
 const [isLoading, setIsLoading] = useState(false);
 const toast = useToast();
+const email = useSelector((state) => state.user.email);
 
 const handleChange = (e) => {
-    const newEmail = e.target.value;
-    setEmail(newEmail); // Update email
-    setIsValid(/^\d{6}$/.test(newEmail)); // Validate the new value directly
-    setIsTouched(true); // Mark as touched
+    const newCode = e.target.value;
+    setCode(newCode);
+    setIsValid(/^\d{6}$/.test(newCode));
+    setIsTouched(true);
 }
 const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true)
-    if (isValid && isTouched && email) {
+    let response=null;
+    if (isValid && isTouched && code) {
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/login', { email });
+            response = await axios.post('http://127.0.0.1:8000/api/verifiy-email', { email,otp: code });
             console.log('API Response:', response.data);
-            toast({
-                description: 'Message envoyé avec succès.',
-                status: 'success',
-                duration: 9000,
-                isClosable: true,
-            });
         } catch (error) {
             const errorMessage = error.response ? error.response.data : error.message;
             console.error('API Error:', errorMessage);
             toast({
-                description: 'Email introuvable.',
+                description: 'erreur inconu.',
                 status: 'error',
                 duration: 9000,
                 isClosable: true,
             });
         }finally{
-            setIsLoading(false)
+            setIsLoading(false);
+            toast({
+                description: response.data.message,
+                status: response.data.success ? 'success' : 'error',
+                duration: 9000,
+                isClosable: true,
+            });
         }
     }
 };
@@ -55,7 +57,7 @@ const handleSubmit = async (e) => {
                     <span className="bg-[#0F4493] w-20 h-0.5"></span>
                 </div>
                 <form className="flex flex-col justify-center gap-6 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5" onSubmit={handleSubmit}>
-                    <Input variant='outline' placeholder='code de 6 chiffres' isInvalid={!isValid && isTouched} value={email} onChange={handleChange} />
+                    <Input variant='outline' placeholder='code de 6 chiffres' isInvalid={!isValid && isTouched} value={code} onChange={handleChange} />
                     <Button colorScheme='facebook' type="submit" isLoading={isLoading} isDisabled={!isValid}>Se Connecter</Button>
                 </form>
             </div>
