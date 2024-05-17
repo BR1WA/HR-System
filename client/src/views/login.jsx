@@ -16,9 +16,10 @@ const navigate = useNavigate();
 const dispatch = useDispatch();
 
 const handleChange = (e) => {
-    setEmail(e.target.value);
-    setIsValid(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email));
-    setIsTouched(true)
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    setIsValid(/^[A-Z0-9.]+@gmail\.com$/i.test(newEmail));
+    setIsTouched(true);
 }
 const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +45,7 @@ const handleSubmit = async (e) => {
                 duration: 9000,
                 isClosable: true,
             });
-        }finally{
+        }finally{   
             setIsLoading(false);
         }
     }
@@ -59,7 +60,7 @@ const handleSubmit = async (e) => {
                     <Heading color='#0F4493' size="lg">Authentifier vous!</Heading>
                     <span className="bg-[#0F4493] w-20 h-0.5"></span>
                 </div>
-                <form className="flex flex-col justify-center gap-6 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5" onSubmit={handleSubmit}>
+                <form className="flex flex-col justify-center gap-7 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5" onSubmit={handleSubmit}>
                     <Input variant='outline' placeholder='Email' isInvalid={!isValid && isTouched} value={email} onChange={handleChange} />
                     <Button colorScheme='facebook' type="submit" isLoading={isLoading} isDisabled={!isValid}>Envoyer</Button>
                 </form>
