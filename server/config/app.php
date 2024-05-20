@@ -127,20 +127,21 @@ return [
     ],
 
     
-    // 'providers' => ServiceProvider::defaultProviders()->merge([
-    //     /*
-    //      * Package Service Providers...
-    //      */
+    'providers' => ServiceProvider::defaultProviders()->merge([
+        Spatie\Permission\PermissionServiceProvider::class,
+        /*
+         * Package Service Providers...
+         */
 
-    //     /*
-    //      * Application Service Providers...
-    //      */
-    //     Ichtrojan\Otp\OtpServiceProvider::class,
-    // ])->toArray(),
+        /*
+         * Application Service Providers...
+         */
+        Ichtrojan\Otp\OtpServiceProvider::class,
+    ])->toArray(),
     
     
-    // 'aliases' => Facade::defaultAliases()->merge([
-    //     'Otp' => Ichtrojan\Otp\Otp::class,
-    // ])->toArray(),
+    'aliases' => Facade::defaultAliases()->merge([
+        'Otp' => Ichtrojan\Otp\Otp::class,
+    ])->toArray(),
 
 ];
