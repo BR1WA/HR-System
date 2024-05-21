@@ -47,8 +47,7 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('type')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->boolean('is_admin');
-            $table->boolean('is_archive');
+            $table->boolean('is_archived')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -57,8 +57,7 @@ class UserController extends Controller
             'indice' => 'nullable|integer',
             'email' => 'nullable|email|unique:users',
             'type' => 'nullable|string',
-            'is_admin' => 'required|boolean',
-            'is_archive' => 'required|boolean',
+            'is_archived' => 'boolean',
         ]);
 
         // Créer un nouvel utilisateur
@@ -116,8 +115,7 @@ class UserController extends Controller
             'indice' => 'nullable|integer',
             'email' => 'nullable|email|unique:users,email,' . $id,
             'type' => 'nullable|string',
-            'is_admin' => 'required|boolean',
-            'is_archive' => 'required|boolean',
+            'is_archived' => 'boolean',
         ]);
 
         // Mettre à jour l'utilisateur

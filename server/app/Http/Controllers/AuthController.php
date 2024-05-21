@@ -48,14 +48,11 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             "success" => true,
-            "message" =>"email verified",
+            "message" =>"Email vérifié avec succès",
             "data" => [
                 "user" => $user,
                 "token" => $token
             ],
         ], 200);
-    }
-    public function logout(){
-
     }
 }
