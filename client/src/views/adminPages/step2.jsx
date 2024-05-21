@@ -1,21 +1,6 @@
 import { Heading,Box,Image,Input,Button,Select} from "@chakra-ui/react"
-import React, { useRef } from 'react'
 
-const Step2 = ({setStep,formData, setFormData}) => {
-    const CIN = useRef(null);
-    const dateN = useRef(null);
-    const genre = useRef(null);
-    const lieuN = useRef(null);
-
-    const handleClick = () => {
-        setFormData({...formData,
-            CIN : CIN.current.value,
-            dateN : dateN.current.value,
-            genre : genre.current.value,
-            lieuN : lieuN.current.value,
-        })
-        setStep(3);
-    }
+const Step2 = ({setStep,formData,handleChange}) => {
 
   return (
     <div className="p-3">
@@ -29,15 +14,18 @@ const Step2 = ({setStep,formData, setFormData}) => {
             </div>
             <form className="flex flex-col items-center gap-10">
                 <div className="grid grid-cols-2 gap-9">
-                    <Input variant='outline' placeholder='CIN' ref={CIN} />
-                    <Input variant='outline' placeholder='Date de naissance' ref={dateN} />
-                    <Select placeholder='Genre' ref={genre}>
+                    <Input variant='outline' placeholder='CIN' name="cin" value={formData.cin} onChange={handleChange} />
+                    <Input variant='outline' placeholder='Date de naissance' name="date_naissance" value={formData.date_naissance} onChange={handleChange} />
+                    <Select placeholder='Genre' className="placeholder-gray-500" name="genre" value={formData.genre} onChange={handleChange}>
                         <option value='homme'>homme</option>
                         <option value='femme'>femme</option>
                     </Select>
-                    <Input variant='outline' placeholder='Lieu de naissance' ref={lieuN} />
+                    <Input variant='outline' placeholder='Lieu de naissance' name="lieu_naissance" value={formData.lieu_naissance} onChange={handleChange} />
                 </div>
-                <Button colorScheme='facebook' type="submit" className="w-1/2" onClick={handleClick}>Suivant</Button>
+                <div className="flex justify-center gap-6 w-full">
+                    <Button colorScheme='facebook' className="sm:w-1/4" onClick={()=>setStep(1)}  variant='outline' >Precedent</Button>
+                    <Button colorScheme='facebook' className="sm:w-1/4" onClick={()=>setStep(3)} >Suivant</Button>
+                </div>
             </form>
         </div>
     </div>

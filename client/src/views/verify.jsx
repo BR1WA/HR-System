@@ -62,7 +62,6 @@ const handleSubmit = async (e) => {
                 <form className="flex flex-col justify-center gap-7 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5" onSubmit={handleSubmit}>
                     <div className="flex flex-col gap-2">
                         <Input variant='outline' placeholder='code de 6 chiffres' isInvalid={!isValid && isTouched} value={code} onChange={handleChange} />
-                        <Checkbox  defaultChecked={rememberMe} size='sm' fontWeight='' onChange={() => setRememberMe(prevRememberMe => !prevRememberMe)}>souviens-toi de moi</Checkbox>
                     </div>
                     <Button colorScheme='facebook' type="submit" isLoading={isLoading} isDisabled={!isValid}>Se Connecter</Button>
                 </form>
