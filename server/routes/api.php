@@ -1,9 +1,10 @@
 <?php
 
-
+use App\Http\Controllers\ArchiveController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\UserController;
 
 Route::get('/user', function (Request $request) {
@@ -22,3 +23,8 @@ Route::group(['middleware' => ['guest']], function() {
 
     Route::apiResource('users', UserController::class);
     Route::get('/user/{id}/certificate', [CertificateController::class, 'printCertificate']);
+
+
+
+    Route::post('/archive/{user}', [ArchiveController::class, 'archiveUser']);
+    Route::get('/archives', [ArchiveController::class, 'getArchives']);
