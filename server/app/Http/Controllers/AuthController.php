@@ -46,6 +46,7 @@ class AuthController extends Controller
         $user->email_verified_at= now();
         $user->save();
         $token = $user->createToken('auth_token')->plainTextToken;
+        $user->role=$user->getRoleNames()[0];
         return response()->json([
             "success" => true,
             "message" =>"Email vérifié avec succès",

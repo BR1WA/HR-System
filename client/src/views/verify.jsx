@@ -4,6 +4,7 @@ import axios from "axios"
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from "react-cookie";
+import { axiosInstance } from "../axios";
 
 const Verify = ()=>{
 
@@ -29,11 +30,12 @@ const handleSubmit = async (e) => {
     let response=null;
     if (isValid && isTouched && code) {
         try {
-            response = await axios.post('http://127.0.0.1:8000/api/verifiy-email', { email,otp: code });
+            response = await axiosInstance.post('http://127.0.0.1:8000/api/verifiy-email', { email,otp: code });
             console.log('API Response:', response.data);
             if (response.data.success) {
                 if(rememberMe) setCookie('user_id', response.data.data.user.id,7);
-                navigate('/options');
+                sessionStorage.setItem('token',response.data.data.token)
+                response.data.data.user.role==='admin' ? navigate('/options') : navigate('/employee')
             }
         } catch (error) {
             const errorMessage = error.response ? error.response.data : error.message;

@@ -1,12 +1,12 @@
 import axios from "axios";
 export const axiosInstance = axios.create({
     baseURL: 'http://127.0.0.1:8000/api',
-    timeout: 2000,
+    timeout: 5000,
   });
 
 axiosInstance.interceptors.request.use(
   function(config){
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if(token){
       config.headers.Authorization = `Bearer ${token}`;
     }

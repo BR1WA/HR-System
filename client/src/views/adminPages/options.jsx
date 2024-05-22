@@ -14,7 +14,7 @@ const Options = () => {
                     <span className="bg-[#0F4493] w-20 h-0.5"></span>
                 </div>
                 <div className="flex justify-center gap-20 w-full">
-                    <Box as={Link} to="/stepper" display="flex" flexDirection="column" alignItems="center" justifyContent="center" backgroundColor="#0F4493" w="250px" h="250px" color="white" borderRadius="8" _hover={{ bg: 'blue.800' }} cursor="pointer" transition="background-color 0.2s">
+                    <Box as={Link} to="/addUser" display="flex" flexDirection="column" alignItems="center" justifyContent="center" backgroundColor="#0F4493" w="250px" h="250px" color="white" borderRadius="8" _hover={{ bg: 'blue.800' }} cursor="pointer" transition="background-color 0.2s">
                     <img width="77" src="https://img.icons8.com/metro/100/ffffff/plus-math.png" alt="plus-math"/>
                     <Text fontSize="2xl" className="font-bold">AJOUTER</Text>    
                     </Box>

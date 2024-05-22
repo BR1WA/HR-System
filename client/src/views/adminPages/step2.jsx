@@ -9,11 +9,11 @@ const Step2 = ({setStep,formData,handleChange}) => {
         </Box>
         <div className="flex flex-col items-center gap-14">
             <div className="flex flex-col gap-4 items-center">
-                <Heading color='#0F4493' size="lg">Informations personnelles</Heading>
+                <Heading color='#0F4493' size="lg" textAlign="center" textTransform="capitalize">Informations personnelles</Heading>
                 <span className="bg-[#0F4493] w-20 h-0.5"></span>
             </div>
             <form className="flex flex-col items-center gap-10">
-                <div className="grid grid-cols-2 gap-9">
+                <div className="sm:grid grid-cols-2 gap-9 flex flex-col">
                     <Input variant='outline' placeholder='CIN' name="cin" value={formData.cin} onChange={handleChange} />
                     <Input variant='outline' placeholder='Date de naissance' name="date_naissance" value={formData.date_naissance} onChange={handleChange} />
                     <Select placeholder='Genre' className="placeholder-gray-500" name="genre" value={formData.genre} onChange={handleChange}>

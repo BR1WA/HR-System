@@ -9,7 +9,7 @@ const Step3 = ({setStep,formData,handleChange}) => {
         </Box>
         <div className="flex flex-col items-center gap-14">
             <div className="flex flex-col gap-4 items-center">
-                <Heading color='#0F4493' size="lg">Coordonées</Heading>
+                <Heading color='#0F4493' size="lg" textAlign="center" textTransform="capitalize">Coordonées</Heading>
                 <span className="bg-[#0F4493] w-20 h-0.5"></span>
             </div>
             <div className="flex flex-col items-center gap-16">

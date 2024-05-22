@@ -7,22 +7,23 @@ import Step5 from './step5';
 import Step6 from './step6';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { axiosInstance } from '../../axios';
 
 const Stepper = () => {
     const [step, setStep] = useState(1);
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({type : sessionStorage.getItem("type")});
     const navigate = useNavigate();
 
     const handleSubmit = async () => {
       try {
-          const response = await axios.post('http://127.0.0.1:8000/api/users', formData);
+          const response = await axiosInstance.post('/users', formData);
           console.log('Response:', response.data);
           navigate('/options');
       } catch (error) {
           console.error('There was an error submitting the form!', error);
       }
     }
-    
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
