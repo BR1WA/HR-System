@@ -15,7 +15,7 @@ const Step2 = ({setStep,formData,handleChange}) => {
             <form className="flex flex-col items-center gap-10">
                 <div className="sm:grid grid-cols-2 gap-9 flex flex-col">
                     <Input variant='outline' placeholder='CIN' name="cin" value={formData.cin} onChange={handleChange} />
-                    <Input variant='outline' placeholder='Date de naissance' name="date_naissance" value={formData.date_naissance} onChange={handleChange} />
+                    <Input variant='outline' type="date" placeholder='Date de naissance' name="date_naissance" value={formData.date_naissance} onChange={handleChange} />
                     <Select placeholder='Genre' className="placeholder-gray-500" name="genre" value={formData.genre} onChange={handleChange}>
                         <option value='homme'>homme</option>
                         <option value='femme'>femme</option>

@@ -8,17 +8,46 @@ import Step6 from './step6';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../axios';
+import { Spinner } from '@chakra-ui/react';
 
 const Stepper = () => {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({type : sessionStorage.getItem("type")});
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
+
+    
+    const fetchData = async () => {
+        setIsLoading(true)
+        try {
+            const response = await axiosInstance.get(`/users/${sessionStorage.getItem('user')}`);
+            console.log('Response:', response.data);
+            setFormData(response.data);
+            console.log(response.data);
+            setIsLoading(false);
+        } catch (error) {
+            console.error('There was an error fetching the data !', error);
+        } finally {
+            setIsLoading(false)
+        }
+    }
+    
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const handleSubmit = async () => {
       try {
-          const response = await axiosInstance.post('/users', formData);
-          console.log('Response:', response.data);
-          navigate('/options');
+        
+        if(sessionStorage.getItem("user")){
+            const response = await axiosInstance.put(`/users/${sessionStorage.getItem("user")}`, formData);
+            console.log('Response:', response.data);
+            navigate('/options');
+        }else{
+            const response = await axiosInstance.post('/users', formData);
+            console.log('Response:', response.data);
+            navigate('/options');
+        }
       } catch (error) {
           console.error('There was an error submitting the form!', error);
       }
@@ -36,17 +65,29 @@ const Stepper = () => {
         console.log(formData);
     }, [formData]);
 
-
-  return (
-    <div>
-        {step == 1 && <Step1 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
-        {step == 2 && <Step2 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
-        {step == 3 && <Step3 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
-        {step == 4 && <Step4 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
-        {step == 5 && <Step5 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
-        {step == 6 && <Step6 setStep={setStep} setFormData={setFormData} formData={formData} handleSubmit={handleSubmit} handleChange={handleChange}/> }
-    </div>
-  )
+    
+    if (isLoading === true) {return (
+        <div className='text-3xl h-screen font-bold text-blue-900 flex items-center justify-center'>
+            <Spinner
+              thickness='4px'
+              speed='0.65s'
+              emptyColor='gray.200'
+              color='blue.500'
+              size='xl'
+            />
+        </div>)
+      }else{
+    return (
+        <div>
+            {step == 1 && <Step1 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
+            {step == 2 && <Step2 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
+            {step == 3 && <Step3 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
+            {step == 4 && <Step4 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
+            {step == 5 && <Step5 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
+            {step == 6 && <Step6 setStep={setStep} setFormData={setFormData} formData={formData} handleSubmit={handleSubmit} handleChange={handleChange}/> }
+        </div>
+    )
+    }
 }
 
 export default Stepper

@@ -6,14 +6,13 @@ import { RxHamburgerMenu } from "react-icons/rx";
 
 
 const Users = () => {
-    
     const [users, setUsers] = useState([]);
     const Navigate = useNavigate();
     const fetchData = async () => {
         try {
             const response = await axiosInstance.get('/users');
             console.log('Response:', response.data);
-            setUsers(response.data.map(user => [user.nom,user.type,user.id]));
+            setUsers(response.data.map(user => [user.nom,user.type,user.id,user.avatar,user.prenom]));
         console.log(users);
         } catch (error) {
             console.error('There was an error submitting the form!', error);
@@ -24,7 +23,7 @@ const Users = () => {
         fetchData();
       }, []);
 
-      const handleClick = (id) => {
+      const viewProfile = (id) => {
         sessionStorage.setItem("id",id);
         console.log(id);
         Navigate("/user")
@@ -38,6 +37,11 @@ const Users = () => {
         } catch (error) {
             console.error('There was an error deleting the user', error);
         }
+      }
+
+      const editUser = (id) => {
+        sessionStorage.setItem('user', id);
+        Navigate('/stepper');
       }
 
     return(
@@ -64,8 +68,8 @@ const Users = () => {
                                         {users.filter(user=>user[1] == 'enseignant').map((user,index)=>(
                                             
                                             <Tr key={index} className="hover:bg-slate-100 flex justify-between">
-                                                <Td className="flex items-center gap-4 cursor-pointer " onClick={()=>handleClick(user[2])}><Avatar src='https://bit.ly/broken-link' />{user[0]}</Td>
-                                                <Td className="left">
+                                                <Td className="flex items-center gap-4 cursor-pointer " onClick={()=>viewProfile(user[2])}><Avatar src={user[3]} />{user[0]} {user[4]}</Td>
+                                                <Td>
                                                     <Menu>
                                                         <MenuButton
                                                             as={IconButton}
@@ -74,10 +78,10 @@ const Users = () => {
                                                             variant='outline'
                                                         />
                                                         <MenuList>
-                                                            <MenuItem onClick={()=>handleClick(user[2])}>
+                                                            <MenuItem onClick={()=>viewProfile(user[2])}>
                                                                 Voir Profile
                                                             </MenuItem>
-                                                            <MenuItem>
+                                                            <MenuItem onClick={()=>editUser(user[2])}>
                                                                 Modifier
                                                             </MenuItem>
                                                             <MenuItem>
@@ -105,8 +109,8 @@ const Users = () => {
                                         {users.filter(user=>user[1] == 'fonctionnaire').map((user,index)=>(
                                             
                                             <Tr key={index} className="hover:bg-slate-100 flex justify-between">
-                                                <Td className="flex items-center gap-4 cursor-pointer " onClick={()=>handleClick(user[2])}><Avatar src='https://bit.ly/broken-link' />{user[0]}</Td>
-                                                <Td className="left">
+                                                <Td className="flex items-center gap-4 cursor-pointer " onClick={()=>viewProfile(user[2])}><Avatar src={user[3]} />{user[0]}</Td>
+                                                <Td>
                                                     <Menu>
                                                         <MenuButton
                                                             as={IconButton}
@@ -115,7 +119,7 @@ const Users = () => {
                                                             variant='outline'
                                                         />
                                                         <MenuList>
-                                                            <MenuItem>
+                                                            <MenuItem onClick={()=>viewProfile(user[2])}>
                                                                 Voir Profile
                                                             </MenuItem>
                                                             <MenuItem>

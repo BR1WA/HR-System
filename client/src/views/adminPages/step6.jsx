@@ -13,16 +13,16 @@ const Step6 = ({setStep,formData,handleChange,handleSubmit}) => {
             </div>
             <div className="flex flex-col items-center gap-10">
                 <div className="sm:grid grid-cols-2 gap-9 flex flex-col">
-                    <Input variant='outline' placeholder='Date debut de fonction' name="date_debut_fonction" value={formData.date_debut_fonction}  onChange={handleChange}/>
+                    <Input type="date" variant='outline' placeholder='Date debut de fonction' name="date_debut_fonction" value={formData.date_debut_fonction}  onChange={handleChange}/>
                     <Input variant='outline' placeholder='Service affectation' name="service_affectation" value={formData.service_affectation}  onChange={handleChange}/>
                     <Input variant='outline' placeholder='Type mouvement' name="type_mouvement" value={formData.type_mouvement}  onChange={handleChange}/>
-                    <Input variant='outline' placeholder='Ministére' name="ministere" value={formData.ministere}  onChange={handleChange}/>
-                    <Input variant='outline' placeholder='Date mouvement' name="date_mouvement" value={formData.date_mouvement}  onChange={handleChange}/>
-                    <Input variant='outline' placeholder='Date expiration de mouvement' name="date_expiration_mouvement" value={formData.date_expiration_mouvement}  onChange={handleChange}/>
+                    <Input variant='outline' placeholder='Ministére' name="organisme_accueil" value={formData.organisme_accueil}  onChange={handleChange}/>
+                    <Input type="date" variant='outline' placeholder='Date mouvement' name="date_mouvement" value={formData.date_mouvement}  onChange={handleChange}/>
+                    <Input type="date" variant='outline' placeholder='Date expiration de mouvement' name="date_expiration_mouvement" value={formData.date_expiration_mouvement}  onChange={handleChange}/>
                 </div>
                 <div className="flex justify-center gap-6 w-full">
                     <Button colorScheme='facebook' className="sm:w-1/4" onClick={()=>setStep(5)}  variant='outline' >Precedent</Button>
-                    <Button colorScheme='facebook' className="sm:w-1/4" onClick={handleSubmit} >Ajouter</Button>
+                    <Button colorScheme='facebook' className="sm:w-1/4" onClick={handleSubmit} >{sessionStorage.getItem("user") ? "modifier" : "Ajouter"}</Button>
                 </div>
             </div>
         </div>

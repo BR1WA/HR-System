@@ -20,7 +20,7 @@ const Step4 = ({setStep,formData,handleChange}) => {
                     <Input variant='outline' placeholder='Echelon' name="echelon" value={formData.echelon} onChange={handleChange}/>
                     <Input variant='outline' placeholder='Echelle' name="echelle" value={formData.echelle} onChange={handleChange}/>
                     <Input variant='outline' placeholder='Indice' name="indice" value={formData.indice} onChange={handleChange}/>
-                    <Input variant='outline' placeholder='Date de recrutement' name="date_recrutement" value={formData.date_recrutement} onChange={handleChange}/>
+                    <Input type="date" variant='outline' placeholder='Date de recrutement' name="date_recrutement" value={formData.date_recrutement} onChange={handleChange}/>
                 </div>
                 <div className="flex justify-center gap-6 w-full">
                     <Button colorScheme='facebook' className="sm:w-1/4" onClick={()=>setStep(3)}  variant='outline' >Precedent</Button>

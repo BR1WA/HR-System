@@ -17,9 +17,9 @@ const Step5 = ({setStep,formData,handleChange}) => {
                     <Input variant='outline' placeholder='Departement' name="departement" value={formData.departement}  onChange={handleChange}/>
                     <Input variant='outline' placeholder='Diplome' name="diplome" value={formData.diplome} onChange={handleChange}/>
                     <Input variant='outline' placeholder='Specialite' name="specialite" value={formData.specialite} onChange={handleChange}/>
-                    <Input variant='outline' placeholder='Université de diplome' name="universite" value={formData.universite} onChange={handleChange}/>
+                    <Input variant='outline' placeholder='Université de diplome' name="etabl_diplome" value={formData.etabl_diplome} onChange={handleChange}/>
                     <Input variant='outline' placeholder='Situation Administratif' name="situation_administrative" value={formData.situation_administrative}  onChange={handleChange}/>
-                    <Input variant='outline' placeholder='Fonction exercée' name="fonction_exerce" value={formData.fonction_exerce} onChange={handleChange}/>
+                    <Input variant='outline' placeholder='Fonction exercée' name="fonction_exercee" value={formData.fonction_exercee} onChange={handleChange}/>
                 </div>
                 <div className="flex justify-center gap-6 w-full">
                     <Button colorScheme='facebook' className="sm:w-1/4" onClick={()=>setStep(4)}  variant='outline' >Precedent</Button>
