@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Broadcast;
+use App\Http\Controllers\ArchiveController;
 
 Route::get('/user', function (Request $request) {
      $user=$request->user();
@@ -21,6 +22,8 @@ Route::group(['middleware' => ['guest']], function() {
   Route::apiResource('/users', UserController::class);
   Route::post('/avatar/{id}', [UserController::class, 'setAvatar']);
   Route::delete('/avatar/{id}', [UserController::class, 'deleteAvatar']);
+    Route::post('/archive/{user}', [ArchiveController::class, 'archiveUser']);
+    Route::get('/archives', [ArchiveController::class, 'getArchives']);
 
 });
   

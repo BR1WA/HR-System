@@ -132,7 +132,6 @@ const User = () => {
                   <MenuItem onClick={deleteAvatar} color="tomato" command={<MdDelete className='text-lg' />}>
                     Suprimer la photo
                   </MenuItem>}
-                  
                 </MenuList>
               </Menu>
 
@@ -164,31 +163,31 @@ const User = () => {
             </p>
           </div>
         </div>
-          <div className='m-10 shadow-lg p-5'>
-            <Heading color='#0F4493' size="md" marginBottom="5">Informations Professionnelles</Heading>
-            <p className='capitalize flex flex-col gap-2'>
-              <li className='list-none'><b>Type de Personnel</b> : {userInfos.type_personnel}</li>
-              <li className='list-none'><b>date de recrutement</b> : {userInfos.date_recrutement}</li>
-              <li className='list-none'><b>grade</b> : {userInfos.grade}</li>
-              <li className='list-none'><b>echelon</b> : {userInfos.echelon}</li>
-              <li className='list-none'><b>echelle</b> : {userInfos.echelle}</li>
-              <li className='list-none'><b>incice</b> : {userInfos.indice}</li>
+        <div className='m-10 shadow-lg p-5'>
+          <Heading color='#0F4493' size="md" marginBottom="5">Informations Professionnelles</Heading>
+          <p className='capitalize flex flex-col gap-2'>
+            <li className='list-none'><b>Type de Personnel</b> : {userInfos.type_personnel}</li>
+            <li className='list-none'><b>date de recrutement</b> : {userInfos.date_recrutement}</li>
+            <li className='list-none'><b>grade</b> : {userInfos.grade}</li>
+            <li className='list-none'><b>echelon</b> : {userInfos.echelon}</li>
+            <li className='list-none'><b>echelle</b> : {userInfos.echelle}</li>
+            <li className='list-none'><b>incice</b> : {userInfos.indice}</li>
 
-              <li className='list-none'><b>departement</b> : {userInfos.departement}</li>
-              <li className='list-none'><b>diplome</b> : {userInfos.diplome}</li>
-              <li className='list-none'><b>univérsité de diplome</b> : {userInfos.etabl_diplome}</li>
-              <li className='list-none'><b>specialite</b> : {userInfos.specialite}</li>
-              <li className='list-none'><b>Situation Administrative</b> : {userInfos.situation_administrative	}</li>
-              <li className='list-none'><b>Fonction exercée</b> : {userInfos.fonction_exercee}</li>
-              
-              <li className='list-none'><b>Date debut de fonction</b> : {userInfos.date_debut_fonction}</li>
-              <li className='list-none'><b>Service affectation</b> : {userInfos.service_affectation}</li>
-              <li className='list-none'><b>Type mouvement</b> : {userInfos.type_mouvement}</li>
-              <li className='list-none'><b>Ministére</b> : {userInfos.organisme_accueil	}</li>
-              <li className='list-none'><b>Date mouvement</b> : {userInfos.date_mouvement}</li>
-              <li className='list-none'><b>Date d'expiration de mouvement</b> : {userInfos.date_expiration_mouvement}</li>
-            </p>
-          </div>
+            <li className='list-none'><b>departement</b> : {userInfos.departement}</li>
+            <li className='list-none'><b>diplome</b> : {userInfos.diplome}</li>
+            <li className='list-none'><b>univérsité de diplome</b> : {userInfos.etabl_diplome}</li>
+            <li className='list-none'><b>specialite</b> : {userInfos.specialite}</li>
+            <li className='list-none'><b>Situation Administrative</b> : {userInfos.situation_administrative	}</li>
+            <li className='list-none'><b>Fonction exercée</b> : {userInfos.fonction_exercee}</li>
+            
+            <li className='list-none'><b>Date debut de fonction</b> : {userInfos.date_debut_fonction}</li>
+            <li className='list-none'><b>Service affectation</b> : {userInfos.service_affectation}</li>
+            <li className='list-none'><b>Type mouvement</b> : {userInfos.type_mouvement}</li>
+            <li className='list-none'><b>Ministére</b> : {userInfos.organisme_accueil	}</li>
+            <li className='list-none'><b>Date mouvement</b> : {userInfos.date_mouvement}</li>
+            <li className='list-none'><b>Date d'expiration de mouvement</b> : {userInfos.date_expiration_mouvement}</li>
+          </p>
+        </div>
     </div>
   )
 }

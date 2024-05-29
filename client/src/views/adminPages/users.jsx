@@ -1,27 +1,51 @@
-import { Heading,Box,Image, Tabs, TabList, Tab, TabPanels, TabPanel, Table, Tbody, Tr, Td, Tfoot, Th, Avatar, Menu, MenuButton, MenuList, MenuItem, IconButton} from "@chakra-ui/react"
-import { Link, useNavigate } from "react-router-dom"
+import { Heading,Box,Image, Tabs, TabList, Tab, TabPanels, TabPanel, Table, Tbody, Tr, Td, Tfoot, Th, Avatar, Menu, MenuButton, MenuList, MenuItem, IconButton, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, Input, ModalFooter, Button, useToast} from "@chakra-ui/react"
+import { useNavigate } from "react-router-dom"
 import { axiosInstance } from "../../axios"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { RxHamburgerMenu } from "react-icons/rx";
 
 
 const Users = () => {
     const [users, setUsers] = useState([]);
     const Navigate = useNavigate();
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const initialRef = useRef(null);
+    const [userId, setUserId] = useState();
+    const toast = useToast();
+
     const fetchData = async () => {
         try {
             const response = await axiosInstance.get('/users');
             console.log('Response:', response.data);
-            setUsers(response.data.map(user => [user.nom,user.type,user.id,user.avatar,user.prenom]));
+        const nonArchivedUsers = response.data.filter(user => !user.is_archived);
+        setUsers(nonArchivedUsers.map(user => [user.nom, user.type, user.id, user.avatar, user.prenom]));
         console.log(users);
         } catch (error) {
-            console.error('There was an error submitting the form!', error);
+            console.error('There was an error fetching the data!', error);
         }
       }
 
       useEffect(() => {
         fetchData();
       }, []);
+
+    const archiveUser = async (userId) => {
+    const raison = initialRef.current.value; 
+        try {
+        const response = await axiosInstance.post(`/archive/${userId}`, { raison });
+        console.log(response.data);
+        setUsers(prevUsers => prevUsers.filter(user => user[2] !== userId));
+        toast({
+            description: 'L\'Utilisateur a été archivé avec succès.',
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+        });
+        onClose();
+        } catch (error) {
+        console.error('There was an error archiving the user!', error);
+        }
+    };
 
       const viewProfile = (id) => {
         sessionStorage.setItem("id",id);
@@ -46,6 +70,31 @@ const Users = () => {
 
     return(
         <>
+        <Modal
+            initialFocusRef={initialRef}
+            isOpen={isOpen}
+            onClose={onClose}
+        >
+            <ModalOverlay />
+            <ModalContent>
+            <ModalHeader>Archiver</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody pb={6}>
+                <FormControl>
+                <FormLabel>Raison</FormLabel>
+                <Input ref={initialRef} placeholder="Raison d'archivage" />
+                </FormControl>
+
+            </ModalBody>
+
+            <ModalFooter>
+                <Button colorScheme='facebook' mr={3} onClick={()=>archiveUser(userId)}>
+                Archiver
+                </Button>
+                <Button onClick={onClose}>Annuler</Button>
+            </ModalFooter>
+            </ModalContent>
+        </Modal>
         <div className="p-3">
             <Box boxSize="200px" h="20">
             <Image src='1200px-Université_Abdelmalek_Essaâdi.png' alt='université abdelmalek essadi' objectFit='cover'/>
@@ -77,14 +126,14 @@ const Users = () => {
                                                             icon={<RxHamburgerMenu />}
                                                             variant='outline'
                                                         />
-                                                        <MenuList>
+                                                        <MenuList fontWeight="semibold">
                                                             <MenuItem onClick={()=>viewProfile(user[2])}>
                                                                 Voir Profile
                                                             </MenuItem>
                                                             <MenuItem onClick={()=>editUser(user[2])}>
                                                                 Modifier
                                                             </MenuItem>
-                                                            <MenuItem>
+                                                            <MenuItem onClick={()=>{onOpen();setUserId(user[2])}}>
                                                                 Archiver
                                                             </MenuItem>
                                                             <MenuItem color="tomato" onClick={()=>deleteUser(user[2])}>
@@ -109,7 +158,7 @@ const Users = () => {
                                         {users.filter(user=>user[1] == 'fonctionnaire').map((user,index)=>(
                                             
                                             <Tr key={index} className="hover:bg-slate-100 flex justify-between">
-                                                <Td className="flex items-center gap-4 cursor-pointer " onClick={()=>viewProfile(user[2])}><Avatar src={user[3]} />{user[0]}</Td>
+                                                <Td className="flex items-center gap-4 cursor-pointer " onClick={()=>viewProfile(user[2])}><Avatar src={user[3]} />{user[0]} {user[4]}</Td>
                                                 <Td>
                                                     <Menu>
                                                         <MenuButton
@@ -125,7 +174,7 @@ const Users = () => {
                                                             <MenuItem>
                                                                 Modifier
                                                             </MenuItem>
-                                                            <MenuItem>
+                                                            <MenuItem onClick={()=>{onOpen();setUserId(user[2])}}>
                                                                 Archiver
                                                             </MenuItem>
                                                             <MenuItem color="tomato" onClick={()=>deleteUser(user[2])}>

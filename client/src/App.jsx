@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Home , Login, Verify} from './views';
-import { AddUser, Options, Stepper, Users } from './views/adminPages';
+import { AddUser, Options, Statistics, Stepper, Users } from './views/adminPages';
 import User from './views/adminPages/User';
 import { PrivateRoutes } from './PrivateRoutes';
 
@@ -17,6 +17,7 @@ function App(){
       <Route path='/stepper' element={<PrivateRoutes role="admin"><Stepper/></PrivateRoutes>}></Route>
       <Route path='/user' element={<PrivateRoutes role="admin"><User/></PrivateRoutes>}></Route>
       <Route path='/employee' element={<PrivateRoutes role="employee"><User/></PrivateRoutes>}></Route>
+      <Route path='/statistics' element={<PrivateRoutes role="admin"><Statistics/></PrivateRoutes>}></Route>
     </Routes>
   </>
   )
