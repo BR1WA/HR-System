@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Http\Request;
 use App\Events\NotificationEvent;
 use Illuminate\Support\Facades\Route;
@@ -29,3 +30,6 @@ Route::group(['middleware' => ['guest']], function() {
   
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/verifiy-email', [AuthController::class, 'verifyEmail']);
+
+    Route::apiResource('users', UserController::class);
+    Route::get('/user/{id}/certificate', [CertificateController::class, 'printCertificate']);
