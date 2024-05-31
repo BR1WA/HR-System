@@ -13,7 +13,7 @@ const Statistics = () => {
     const fetchData = async () => {
         try {
             const response = await axiosInstance.get('/users');
-            setRawData(response.data.map(user => ({ type: user.type, departement: user.departement, genre: user.genre })));
+            setRawData(response.data.map(user => ({ type: user.type, departement: user.departement, genre: user.genre, situation_familiale: user.situation_familiale })));
             console.log(rawData);
         } catch (error) {
             console.error('There was an error fetching the data', error);
@@ -91,7 +91,7 @@ const Statistics = () => {
 
   return (
         <div className="p-3">
-            <Box boxSize="200px" h="20">
+            <Box boxSize="100px" h="20">
             <Image src='1200px-Université_Abdelmalek_Essaâdi.png' alt='université abdelmalek essadi' objectFit='cover'/>
             </Box>
             <div className="flex flex-col items-center gap-3">
@@ -105,6 +105,7 @@ const Statistics = () => {
                         <option value='type'>Utilisateurs par type</option>
                         <option value='departement'>Utilisateurs par departement</option>
                         <option value='genre'>Utilisateurs par genre</option>
+                        <option value='situation_familiale'>Utilisateurs par situation familiale</option>
                     </Select>
                 </div>
             </div>

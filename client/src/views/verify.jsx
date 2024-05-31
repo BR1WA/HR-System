@@ -36,7 +36,7 @@ const handleSubmit = async (e) => {
                 if(rememberMe) setCookie('user_id', response.data.data.user.id,7);
                 sessionStorage.setItem('id', response.data.data.user.id);
                 sessionStorage.setItem('token',response.data.data.token)
-                response.data.data.user.role==='admin' ? navigate('/options') : navigate('/employee')
+                response.data.data.user.role==='admin' ? navigate('/options') : navigate('/userOptions')
             }
         } catch (error) {
             const errorMessage = error.response ? error.response.data : error.message;
@@ -54,7 +54,7 @@ const handleSubmit = async (e) => {
 };
     return(
         <div className="p-3">
-            <Box boxSize="200px" h="20">
+            <Box boxSize="100px" h="20">
             <Image src='1200px-Université_Abdelmalek_Essaâdi.png' alt='université abdelmalek essadi' objectFit='cover'/>
             </Box>
             <div className="flex flex-col items-center gap-20">

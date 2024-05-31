@@ -19,4 +19,43 @@ class CertificateController extends Controller
         // Télécharger le PDF
         return $pdf->download('certificate.pdf');
     }
+    public function generatePDF($id)
+    {
+        $user = User::findOrFail($id);
+    
+        $data = [
+            'title' => 'Hello',
+            'date' => date('d/m/Y'),
+            'nom' => $user->nom,
+            'prenom' => $user->prenom,
+            'cin' => $user->cin,
+        ]; 
+              
+        $pdf = PDF::loadView('MyPDF', $data);
+       
+        return $pdf->download('user.pdf');
+    }
+    public function showVacationCertificate($id)
+{
+    $professeur = User::findOrFail($id);
+    return view('rh.certificat_vacance', compact('professeur'));
+}
+
+public function showAuthorizationCertificate($id)
+{
+    $professeur = User::findOrFail($id);
+    return view('rh.certificat_autorisation', compact('professeur'));
+}
+
+public function showAttestationTarifaire($id)
+{
+    $professeur = User::findOrFail($id);
+    return view('rh.certificat_attestation_tarifaire', compact('professeur'));
+}
+
+public function showAttestationTravail($id)
+{
+    $professeur = User::findOrFail($id);
+    return view('rh.certificat_attestation_travail', compact('professeur'));
+}
 }

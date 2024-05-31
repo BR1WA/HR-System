@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\CertificateController;
 
 Route::get('/user', function (Request $request) {
      $user=$request->user();
@@ -15,21 +16,21 @@ Route::get('/user', function (Request $request) {
      unset($user->roles);
      return $user;
 })->middleware('auth:sanctum');
-Route::group(['middleware' => ['guest']], function() {
-});
+
   Route::middleware('auth:sanctum')->group(function () {
   Route::get('/test', function(){return "hello admin";})->middleware("permission:test");
   Route::get('/test2', function(){return "hello employee";})->middleware("permission:test2");
   Route::apiResource('/users', UserController::class);
   Route::post('/avatar/{id}', [UserController::class, 'setAvatar']);
   Route::delete('/avatar/{id}', [UserController::class, 'deleteAvatar']);
-    Route::post('/archive/{user}', [ArchiveController::class, 'archiveUser']);
-    Route::get('/archives', [ArchiveController::class, 'getArchives']);
+  Route::post('/archive/{user}', [ArchiveController::class, 'archiveUser']);
+  Route::get('/archives', [ArchiveController::class, 'getArchives']);
 
 });
   
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/verifiy-email', [AuthController::class, 'verifyEmail']);
+    Route::get('/generate-pdf/{id}', [CertificateController::class, 'generatePDF']);
 
-    Route::apiResource('users', UserController::class);
     Route::get('/user/{id}/certificate', [CertificateController::class, 'printCertificate']);
+    Route::get('/user/{id}/travail', [CertificateController::class, 'showAttestationTarifaire']);
