@@ -3,7 +3,7 @@ import { Heading,Box,Image,Input,Button,Select} from "@chakra-ui/react"
 const Step6 = ({setStep,formData,handleChange,handleSubmit}) => {
   return (
     <div className="p-3">
-        <Box boxSize="200px" h="20">
+        <Box boxSize="100px" h="20">
             <Image src='1200px-Université_Abdelmalek_Essaâdi.png' alt='université abdelmalek essadi' objectFit='cover'/>
         </Box>
         <div className="flex flex-col items-center gap-14">
