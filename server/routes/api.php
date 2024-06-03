@@ -1,10 +1,11 @@
 <?php
 
-
+use App\Http\Controllers\ArchiveController;
 use Illuminate\Http\Request;
 use App\Events\NotificationEvent;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\ArchiveController;
@@ -34,6 +35,7 @@ Route::get('/user', function (Request $request) {
     Route::get('/generate-pdf/{id}', [CertificateController::class, 'generatePDF']);
 
     Route::get('/user/{id}/certificate', [CertificateController::class, 'printCertificate']);
+<<<<<<< HEAD
     Route::get('/user/{id}/travail', [CertificateController::class, 'showAttestationTarifaire']);
 
 
@@ -41,3 +43,10 @@ Route::get('/user', function (Request $request) {
     
     // demande 
     Route::post('/demandes', [DemandeController::class, 'store']);
+=======
+
+
+
+    Route::post('/archive/{user}', [ArchiveController::class, 'archiveUser']);
+    Route::get('/archives', [ArchiveController::class, 'getArchives']);
+>>>>>>> 6511c8f9ea7f7bbbb1b272c405e3cf4ab314e4d4
