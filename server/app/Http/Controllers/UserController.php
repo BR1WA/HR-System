@@ -24,8 +24,10 @@ class UserController extends Controller
         }catch(Exception $e) {
             return response()->json($e);
         }
-     }
+    }
 
+
+    
     public function deleteAvatar($id)
     {
         try {
