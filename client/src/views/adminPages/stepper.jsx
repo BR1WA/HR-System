@@ -5,7 +5,6 @@ import Step3 from './step3';
 import Step4 from './step4';
 import Step5 from './step5';
 import Step6 from './step6';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../axios';
 import { Spinner } from '@chakra-ui/react';
