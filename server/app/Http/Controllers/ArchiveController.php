@@ -32,8 +32,7 @@ class ArchiveController extends Controller
         return response()->json(['message' => 'Failed to archive user'], 500);
     }
 }
-
-
+    
     public function getArchives()
     {
         $archives = Archive::with('user')->orderBy('created_at', 'desc')->get();
