@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Http\Request;
 use App\Events\NotificationEvent;
 use Illuminate\Support\Facades\Route;
@@ -9,6 +8,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\DemandeController;
 
 Route::get('/user', function (Request $request) {
      $user=$request->user();
@@ -34,3 +34,14 @@ Route::get('/user', function (Request $request) {
 
     Route::get('/user/{id}/certificate', [CertificateController::class, 'printCertificate']);
     Route::get('/user/{id}/travail', [CertificateController::class, 'showAttestationTarifaire']);
+
+
+
+    
+    // demande 
+    Route::post('/demandes', [DemandeController::class, 'store']);
+
+
+
+    Route::post('/archive/{user}', [ArchiveController::class, 'archiveUser']);
+    Route::get('/archives', [ArchiveController::class, 'getArchives']);

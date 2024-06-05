@@ -52,6 +52,7 @@ class User extends Authenticatable
         'indice',
         'email',
         'type',
+        'arreter'
     ];
 
     /**
