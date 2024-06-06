@@ -1,12 +1,22 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Demande;
 use Illuminate\Http\Request;
+use TCPDF;
 use Illuminate\Support\Facades\Validator;
 
 class DemandeController extends Controller
 {
+    // Lister les demandes
+    public function index()
+    {
+        $demandes = Demande::with('user')->get();
+        return response()->json($demandes);
+    }
+
+    // Stocker une nouvelle demande
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -49,9 +59,46 @@ class DemandeController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        // Créer la demande avec le champ traitement par défaut
-        $demande = Demande::create(array_merge($request->all(), ['traitement' => 'en cour']));
-
+        $demande = Demande::create(array_merge($request->all(), ['traitement' => 'en cours']));
         return response()->json($demande, 201);
+    }
+
+    // Générer un PDF selon le type de demande
+    public function generatePDF($id)
+    {
+        $demande = Demande::findOrFail($id);
+        $user = $demande->user;
+
+        $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf->SetFont('dejavusans', '', 12, '', true);
+        $pdf->AddPage();
+
+        $viewData = [
+            'nom' => $user->nom,
+            'prenom' => $user->prenom,
+            'date_debut' => $demande->date_debut,
+            'date_fin' => $demande->date_fin,
+        ];
+
+        $content = '';
+
+        switch ($demande->type) {
+            case 'demande_quitter_territoire_national':
+                $viewData['destination_torab_lwatani'] = $demande->destination_torab_lwatani;
+                $content = view('attestations.quitter_territoire_national', $viewData)->render();
+                break;
+            case 'demande_tarif':
+            case 'demande__vacance_annuelle':
+                $content = view('attestations.vacance_annuelle', $viewData)->render();
+                break;
+            case 'damande_absence':
+            case 'demande_licence_exceptionnelle':
+                $viewData['raison'] = $demande->raison;
+                $content = view('attestations.absence_licence', $viewData)->render();
+                break;
+        }
+
+        $pdf->writeHTML($content, true, false, true, false, '');
+        $pdf->Output('attestation.pdf', 'D');
     }
 }
