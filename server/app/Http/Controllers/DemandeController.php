@@ -20,11 +20,11 @@ class DemandeController extends Controller
                     if (!$request->filled('date_debut') || !$request->filled('date_fin') || !$request->filled('destination_torab_lwatani')) {
                         $validator->errors()->add('date_debut', 'Date de début est requise');
                         $validator->errors()->add('date_fin', 'Date de fin est requise');
-                        $validator->errors()->add('destination_torab_lwatani', 'Destination Torab Lwatani est requise');
+                        $validator->errors()->add('destination_torab_lwatani', 'Destination est requise');
                     }
                 });
                 break;
-            case 'demande_tarif':
+            case 'demande_attestation_salaire':
             case 'demande__vacance_annuelle':
                 $validator->after(function ($validator) use ($request) {
                     if (!$request->filled('date_debut') || !$request->filled('date_fin')) {
@@ -43,6 +43,8 @@ class DemandeController extends Controller
                     }
                 });
                 break;
+        case 'demande_attestation_travail':
+            break;
         }
 
         if ($validator->fails()) {
