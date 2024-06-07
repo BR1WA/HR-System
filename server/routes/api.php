@@ -45,3 +45,9 @@ Route::get('/user', function (Request $request) {
 
     Route::post('/archive/{user}', [ArchiveController::class, 'archiveUser']);
     Route::get('/archives', [ArchiveController::class, 'getArchives']);
+
+    // routes/web.php
+
+Route::get('demandes', [DemandeController::class, 'index'])->name('demandes.index');
+Route::post('demandes', [DemandeController::class, 'store'])->name('demandes.store');
+Route::get('demandes/{id}/generatePDF', [DemandeController::class, 'generatePDF'])->name('demandes.generatePDF');
