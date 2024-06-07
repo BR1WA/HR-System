@@ -10,13 +10,7 @@ class Demande extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'type',
-        'date_debut',
-        'date_fin',
-        'raison',
-        'destination_torab_lwatani',
-        'traitement',
+        'user_id', 'type', 'date_debut', 'date_fin', 'raison', 'destination_torab_lwatani', 'traitement',
     ];
 
     public function user()
@@ -24,4 +18,3 @@ class Demande extends Model
         return $this->belongsTo(User::class);
     }
 }
-
