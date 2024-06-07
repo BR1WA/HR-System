@@ -7,13 +7,14 @@ import { axiosInstance } from '../../axios';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Statistics = () => {
-    const [chartType, setChartType] = useState('type');
     const [rawData, setRawData] = useState([]);
+  const [selectedOption, setSelectedOption] = useState('type');
+  const [roleFilter, setRoleFilter] = useState('all');
 
     const fetchData = async () => {
         try {
             const response = await axiosInstance.get('/users');
-            setRawData(response.data.map(user => ({ type: user.type, departement: user.departement, genre: user.genre, situation_familiale: user.situation_familiale })));
+            setRawData(response.data.map(user => ({ type: user.type, departement: user.departement, genre: user.genre, situation_familiale: user.situation_familiale, lieu_naissance : user.lieu_naissance })));
             console.log(rawData);
         } catch (error) {
             console.error('There was an error fetching the data', error);
@@ -24,69 +25,62 @@ const Statistics = () => {
         fetchData();
       }, []);
 
-  const processData = (key) => {
-    return rawData.reduce((acc, item) => {
-      const value = item[key];
-      if (value) {
-        acc[value] = (acc[value] || 0) + 1;
+  const generateChartData = (option, role) => {
+    const filteredData = role === 'all' ? rawData : rawData.filter(user => user.type === role);
+
+    const counts = filteredData.reduce((acc, user) => {
+      const key = user[option];
+      if (key) {
+        acc[key] = (acc[key] || 0) + 1;
       }
       return acc;
     }, {});
-  };
 
-  const roleCounts = processData(chartType);
-  const labels = Object.keys(roleCounts);
-  const data = Object.values(roleCounts);
-
-  const chartData = {
-    labels: labels,
-    datasets: [
-      {
-        data: data,
+    return {
+      labels: Object.keys(counts),
+      datasets: [{
+        data: Object.values(counts),
         backgroundColor: [
-          'rgba(54, 162, 235, 0.2)',
           'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
           'rgba(255, 206, 86, 0.2)',
           'rgba(75, 192, 192, 0.2)',
           'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
         ],
         borderColor: [
-          'rgba(54, 162, 235, 1)',
           'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
           'rgba(255, 206, 86, 1)',
           'rgba(75, 192, 192, 1)',
           'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
+          'rgba(255, 159, 64, 1)'
         ],
-        borderWidth: 1,
-      },
-    ],
+        borderWidth: 1
+      }]
+    };
   };
+
+  const handleOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
+  const handleRoleChange = (event) => {
+    setRoleFilter(event.target.value);
+  };
+
+  const chartData = generateChartData(selectedOption, roleFilter);
 
   const options = {
     responsive: true,
-    plugins: {
-      legend: {
-        display: false, // Hide legend
-      },
-      title: {
-        display: true,
-        text: 'User Distribution',
-      },
-    },
     scales: {
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 1, // Ensure only integer values are displayed
-        },
-      },
-    },
-  };
-
-  const handleChange = (event) => {
-    setChartType(event.target.value);
+          stepSize: 1
+        }
+      }
+    }
   };
 
   return (
@@ -101,12 +95,19 @@ const Statistics = () => {
                 </div>
                 <div className="flex flex-col gap-2 justify-center md:w-2/3 px-10">
                     <Bar data={chartData} options={options}/>
-                    <Select placeholder='choisir une option' onChange={handleChange} value={chartType}>
+                    <div className='flex gap-10'>
+                      <Select placeholder='Choisir une option' onChange={handleOptionChange} value={selectedOption}>
                         <option value='type'>Utilisateurs par type</option>
-                        <option value='departement'>Utilisateurs par departement</option>
+                        <option value='departement'>Utilisateurs par département</option>
                         <option value='genre'>Utilisateurs par genre</option>
-                        <option value='situation_familiale'>Utilisateurs par situation familiale</option>
-                    </Select>
+                        <option value='lieu_naissance'>Utilisateurs par lieu de naissance</option>
+                      </Select>
+                      <Select placeholder='Filtrer par rôle' onChange={handleRoleChange} value={roleFilter}>
+                        <option value='all'>Tous les utilisateurs</option>
+                        <option value='enseignant'>Enseignants</option>
+                        <option value='fonctionnaire'>Fonctionnaires</option>
+                      </Select>
+                    </div>
                 </div>
             </div>
         </div>

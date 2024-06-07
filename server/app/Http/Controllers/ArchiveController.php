@@ -9,7 +9,6 @@ use App\Models\User;
 
 class ArchiveController extends Controller
 {
-<<<<<<< HEAD
     public function archiveUser(Request $request, $userId)
 {
     try {
@@ -33,29 +32,11 @@ class ArchiveController extends Controller
         return response()->json(['message' => 'Failed to archive user'], 500);
     }
 }
-
-
+    
     public function getArchives()
     {
         $archives = Archive::with('user')->orderBy('created_at', 'desc')->get();
 
-=======
-    public function archiveUser(User $user)
-    {
-        $archive = new Archive();
-        $archive->user_id = $user->id;
-        $archive->date = now(); // Date actuelle
-        $archive->raison = "Raison de l'archivage"; // Vous pouvez personnaliser cela selon vos besoins
-        $archive->save();
-
-        return response()->json(['message' => 'Utilisateur archivé avec succès'], 201);
-    }
-
-    public function getArchives()
-    {
-        $archives = Archive::with('user')->orderBy('created_at', 'desc')->get();
-
->>>>>>> 6511c8f9ea7f7bbbb1b272c405e3cf4ab314e4d4
         return response()->json($archives);
     }
 }
