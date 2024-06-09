@@ -1,8 +1,9 @@
-import { Heading,Box,Image, Tabs, TabList, Tab, TabPanels, TabPanel, Table, Tbody, Tr, Td, Tfoot, Th, Avatar, Menu, MenuButton, MenuList, MenuItem, IconButton, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, Input, ModalFooter, Button, useToast} from "@chakra-ui/react"
+import { Heading,Box,Image, Tabs, TabList, Tab, TabPanels, TabPanel, Table, Tbody, Tr, Td, Tfoot, Th, Avatar, Menu, MenuButton, MenuList, MenuItem, IconButton, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, Input, ModalFooter, Button, useToast, Thead, TableCaption} from "@chakra-ui/react"
 import { useNavigate } from "react-router-dom"
 import { axiosInstance } from "../../axios"
 import { useEffect, useState, useRef } from "react"
 import { RxHamburgerMenu } from "react-icons/rx";
+import { ChevronDownIcon } from '@chakra-ui/icons';
 
 
 const Users = () => {
@@ -12,13 +13,14 @@ const Users = () => {
     const initialRef = useRef(null);
     const [userId, setUserId] = useState();
     const toast = useToast();
+    const [filter, setFilter] = useState("Tous");
+    const [search, setSearch] = useState("");
 
     const fetchData = async () => {
         try {
             const response = await axiosInstance.get('/users');
             console.log('Response:', response.data);
-        const nonArchivedUsers = response.data.filter(user => !user.is_archived);
-        setUsers(nonArchivedUsers.map(user => [user.nom, user.type, user.id, user.avatar, user.prenom]));
+        setUsers(response.data.map(user => [user.nom, user.type, user.id, user.avatar, user.prenom,user.is_archived]));
         console.log(users);
         } catch (error) {
             console.error('There was an error fetching the data!', error);
@@ -34,7 +36,13 @@ const Users = () => {
         try {
         const response = await axiosInstance.post(`/archive/${userId}`, { raison });
         console.log(response.data);
-        setUsers(prevUsers => prevUsers.filter(user => user[2] !== userId));
+        const updatedUsers = users.map(([nom, type, id, avatar, prenom, is_archived]) => {
+            if (id === userId) {
+                return [nom, type, id, avatar, prenom, true];
+            }
+            return [nom, type, id, avatar, prenom, is_archived];
+        });
+        setUsers(updatedUsers);
         toast({
             description: 'L\'Utilisateur a été archivé avec succès.',
             status: 'success',
@@ -114,8 +122,57 @@ const Users = () => {
                             <TabPanel>
                                 <Table variant='simple'>
                                     <Tbody>
-                                        {users.filter(user=>user[1] == 'enseignant').map((user,index)=>(
-                                            
+                                        <Thead className="flex justify-center w-full">
+                                            <Th className="w-full">
+                                                <form className="max-w-lg mx-auto">
+                                                    <div className="flex">
+                                                        <label for="search-dropdown" className="mb-2 text-sm font-medium text-gray-900 sr-only">Your Email</label>
+                                                    <Menu>
+                                                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                                                        {filter}
+                                                    </MenuButton>
+                                                    <MenuList>
+                                                        <MenuItem onClick={() => setFilter("Archivés")}>Archivés</MenuItem>
+                                                        <MenuItem onClick={() => setFilter("Tous")}>Tous</MenuItem>
+                                                        <MenuItem onClick={() => setFilter("Non Archivés")}>Non Archivés</MenuItem>
+                                                        <MenuItem>Mark as Draft</MenuItem>
+                                                        <MenuItem>Delete</MenuItem>
+                                                        <MenuItem>Attend a Workshop</MenuItem>
+                                                    </MenuList>
+                                                    </Menu>
+                                                        <div className="relative w-full">
+                                                            <input
+                                                                type="text"
+                                                                id="search-input"
+                                                                className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                                                                placeholder="Rechercher..."
+                                                                value={search}
+                                                                onChange={(e) => setSearch(e.target.value)}
+                                                            />
+                                                            <button type="submit" className="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+                                                                <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                                                </svg>
+                                                                <span className="sr-only">Search</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </Th>
+                                        </Thead>
+                                        {users.filter(user=>user[1] == 'enseignant')
+                                        .filter(user => {
+                                            if (filter === 'Archivés') {
+                                            return user[5] == 1; // Assuming `user[5]` is a boolean indicating if the user is archived
+                                            } else if (filter === 'Non Archivés') {
+                                            return user[5] == 0; // Assuming `user[5]` is a boolean indicating if the user is archived
+                                            }
+                                            return true; // By default, show all users if no filter is applied
+                                        })
+            .filter(user => {
+              const fullName = `${user[0]} ${user[4]}`.toLowerCase();
+              return fullName.includes(search.toLowerCase());
+            }).map((user,index)=>(
                                             <Tr key={index} className="hover:bg-slate-100 flex justify-between">
                                                 <Td className="flex items-center gap-4 cursor-pointer " onClick={()=>viewProfile(user[2])}><Avatar src={user[3]} />{user[0]} {user[4]}</Td>
                                                 <Td>
