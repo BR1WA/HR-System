@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use TCPDF;
+use App\Models\User;
 use App\Models\Demande;
 use Illuminate\Http\Request;
-use TCPDF;
 use Illuminate\Support\Facades\Validator;
 
 class DemandeController extends Controller
@@ -13,6 +14,16 @@ class DemandeController extends Controller
     public function index()
     {
         $demandes = Demande::with('user')->get();
+        return response()->json($demandes);
+    }
+
+    public function getUserDemandes($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        $demandes = Demande::where('user_id', $user->id)->get();
         return response()->json($demandes);
     }
 
@@ -69,60 +80,67 @@ class DemandeController extends Controller
 
     // Générer un PDF selon le type de demande
     public function generatePDF($id)
-    {
-        $demande = Demande::findOrFail($id);
-        $user = $demande->user;
+{
+    $demande = Demande::findOrFail($id);
+    $user = $demande->user;
 
-        $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
-        $pdf->SetFont('dejavusans', '', 12, '', true);
-        $pdf->AddPage();
+    $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+    $pdf->SetFont('dejavusans', '', 12, '', true);
+    $pdf->AddPage();
 
-        $viewData = [
-            'nom' => $user->nom,
-            'prenom' => $user->prenom,
-            'date_debut' => $demande->date_debut,
-            'date_fin' => $demande->date_fin,
-            'grade' => $user->grade,
-            'cin' => $user->cin,
-        ];
+    $viewData = [
+        'nom' => $user->nom,
+        'prenom' => $user->prenom,
+        'date_debut' => $demande->date_debut,
+        'date_fin' => $demande->date_fin,
+        'grade' => $user->grade,
+        'cin' => $user->cin,
+    ];
 
-        $content = '';
+    $content = '';
 
-        try {
-            switch ($demande->type) {
-                case 'demande_quitter_territoire_national':
-                    $viewData['destination_torab_lwatani'] = $demande->destination_torab_lwatani;
-                    $content = view('attestations.quitter_territoire_national', $viewData)->render();
-                    break;
-                case 'demande_attestation_salaire':
-                    $content = view('attestations.demande_attestation_salaire', $viewData)->render();
-                    break;
-                case 'demande__vacance_annuelle':
-                    $content = view('attestations.demande_vacance_annuelle', $viewData)->render();
-                    break;
-                case 'damande_absence':
-                    $viewData['raison'] = $demande->raison;
-                    $content = view('attestations.damande_absence', $viewData)->render();
-                    break;
-                case 'demande_licence_exceptionnelle':
-                    $viewData['raison'] = $demande->raison;
-                    $content = view('attestations.demande_licence_exceptionnelle', $viewData)->render();
-                    break;
-                case 'demande_attestation_travail':
-                    $content = view('attestations.demande_attestation_travail', $viewData)->render();
-                    break;
-                case 'demande_attestation_travail_ar':
-                    $content = view('attestations.demande_attestation_travail_ar', $viewData)->render();
-                    break;
-            }
-            
-            $pdf->writeHTML($content, true, false, true, false, '');
-            $pdf->Output('attestation.pdf', 'D');
-
-            // Update the request status to 'valider'
-            $demande->update(['traitement' => 'valider']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to generate PDF: ' . $e->getMessage()], 500);
+    try {
+        switch ($demande->type) {
+            case 'demande_quitter_territoire_national':
+                $viewData['destination_torab_lwatani'] = $demande->destination_torab_lwatani;
+                $content = view('attestations.quitter_territoire_national', $viewData)->render();
+                break;
+            case 'demande_attestation_salaire':
+                $content = view('attestations.demande_attestation_salaire', $viewData)->render();
+                break;
+            case 'demande__vacance_annuelle':
+                $content = view('attestations.demande_vacance_annuelle', $viewData)->render();
+                break;
+            case 'damande_absence':
+                $viewData['raison'] = $demande->raison;
+                $content = view('attestations.damande_absence', $viewData)->render();
+                break;
+            case 'demande_licence_exceptionnelle':
+                $viewData['raison'] = $demande->raison;
+                $content = view('attestations.demande_licence_exceptionnelle', $viewData)->render();
+                break;
+            case 'demande_attestation_travail':
+                $content = view('attestations.demande_attestation_travail', $viewData)->render();
+                break;
+            case 'demande_attestation_travail_ar':
+                $content = view('attestations.demande_attestation_travail_ar', $viewData)->render();
+                break;
         }
+        
+        $pdf->writeHTML($content, true, false, true, false, '');
+        
+        // Set headers to force download
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="attestation.pdf"');
+
+        // Output PDF document
+        return $pdf->Output('attestation.pdf', 'D');
+
+        // Update the request status to 'valider'
+        //$demande->update(['traitement' => 'valider']);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to generate PDF: ' . $e->getMessage()], 500);
     }
+}
+
 }

@@ -12,6 +12,8 @@ const Attestations = () => {
     const [certificate, setCertificate] = useState({});
     const currentYear = new Date().getFullYear();
     const toast = useToast();
+    const [notifications, setNotifications] = useState({});
+    const [showMore, setShowMore] = useState(false);
 
     const demands = [
         { id: 1, title: 'Demande de congé annuel', description: 'Une demande présentée par l\'employé pour obtenir un congé annuel du travail.', value: 'demande__vacance_annuelle' },
@@ -46,11 +48,21 @@ const Attestations = () => {
     
     const demandCertificate = useCallback(async () => {
         try {
-            await axiosInstance.post('/demandes', {
+            const response = await axiosInstance.post('/demandes', {
                 user_id: sessionStorage.getItem("id"),
                 type: certificate.value,
                 ...formData,
             });
+
+            const newNotification = {
+                id: response.data.id,
+                user_id: sessionStorage.getItem("id"),
+                type: certificate.value,
+                traitement: 'en cour',
+                ...formData,
+            };
+
+            setNotifications(prevNotifications => [newNotification, ...prevNotifications]);
 
             toast({
                 description: 'La demande a été envoyée avec succès.',
@@ -77,6 +89,29 @@ const Attestations = () => {
     useEffect(() => {
         console.log(formData);
     }, [formData]);
+
+    const getUserDemandes = useCallback(async () => {
+        try {
+            const response = await axiosInstance.get(`/demandes/${sessionStorage.getItem('id')}`);
+            setNotifications(response.data);
+        } catch (error) {
+            console.error('There was an error fetching the user demands!', error);
+            toast({
+                description: 'Une erreur s\'est produite lors de la récupération des demandes.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        console.log(notifications);
+    }, [notifications]);
+
+    useEffect(() => {
+        getUserDemandes();
+    }, []);
   return (
         <div className="p-3">
             <div className="flex justify-between items-center">
@@ -91,19 +126,44 @@ const Attestations = () => {
                             icon={<IoMdNotificationsOutline className="text-lg" />}
                             variant='outline'
                         />
-                        <MenuList>
-                            <MenuItem  command='⌘T'>
-                            New Tab
-                            </MenuItem>
-                            <MenuItem  command='⌘N'>
-                            New Window
-                            </MenuItem>
-                            <MenuItem  command='⌘⇧N'>
-                            Open Closed Tab
-                            </MenuItem>
-                            <MenuItem  command='⌘O'>
-                            Open File...
-                            </MenuItem>
+                        <MenuList className="bg-white p-2 shadow-md overflow-y-scroll max-h-96">
+                            <div className="space-y-2">
+                                {Array.from(notifications).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                                    .slice(0, 5)
+                                    .map((notification) => (
+                                        <MenuItem key={notification.id}>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-medium">{demands.find((demand) => demand.value === notification.type)?.title}</span>
+                                                <span className="text-xs text-gray-500">{notification.traitement}</span>
+                                            </div>
+                                        </MenuItem>
+                                    ))}
+                            </div>
+                            {notifications.length > 5 && (
+                                <Button mt={4}
+                                    colorScheme="facebook"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setShowMore(!showMore)}
+                                    className="w-full text-center"
+                                >
+                                    {showMore ? 'Afficher moins' : 'Afficher plus'}
+                                </Button>
+                            )}
+                            {showMore && (
+                                <div className="space-y-2 mt-2">
+                                    {Array.from(notifications).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                                        .slice(5)
+                                        .map((notification) => (
+                                            <MenuItem key={notification.id}>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-sm font-medium">{demands.find((demand) => demand.value === notification.type)?.title}</span>
+                                                    <span className="text-xs text-gray-500">{notification.traitement}</span>
+                                                </div>
+                                            </MenuItem>
+                                        ))}
+                                </div>
+                            )}
                         </MenuList>
                     </Menu>
                     <Button colorScheme="facebook" onClick={()=>""}>Déconnecter</Button>
@@ -138,15 +198,15 @@ const Attestations = () => {
                         <ModalHeader>{certificate.title}</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody pb={6}>
-                            {certificate.id === 1 || certificate.id === 3 && (
+                            {certificate.id === 1 && (
                                 <>
                                     <FormControl>
-                                        <FormLabel>de</FormLabel>
-                                        <Input ref={initialRef} type="date" placeholder="Date debut" name="date_debut" onChange={handleChange}/>
+                                        <FormLabel>De</FormLabel>
+                                        <Input ref={initialRef} type="date" placeholder="Date de début" name="date_debut" onChange={handleChange}/>
                                     </FormControl>
                                     <FormControl>
-                                        <FormLabel>à</FormLabel>
-                                        <Input type="date" placeholder="Date fin" name="date_fin" onChange={handleChange}/>
+                                        <FormLabel>À</FormLabel>
+                                        <Input type="date" placeholder="Date de fin" name="date_fin" onChange={handleChange}/>
                                     </FormControl>
                                 </>
                             )}
@@ -164,6 +224,19 @@ const Attestations = () => {
                                     <FormControl mt={4}>
                                         <FormLabel>Destination</FormLabel>
                                         <Input placeholder="Destination" name="destination_torab_lwatani" onChange={handleChange}/>
+                                    </FormControl>
+                                </>
+                            )}
+                            
+                            {certificate.id === 3 && (
+                                <>
+                                    <FormControl>
+                                        <FormLabel>De</FormLabel>
+                                        <Input ref={initialRef} type="date" placeholder="Date de début" name="date_debut" onChange={handleChange}/>
+                                    </FormControl>
+                                    <FormControl>
+                                        <FormLabel>À</FormLabel>
+                                        <Input type="date" placeholder="Date de fin" name="date_fin" onChange={handleChange}/>
                                     </FormControl>
                                 </>
                             )}
