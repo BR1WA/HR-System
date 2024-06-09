@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use TCPDF;
+use App\Models\User;
 use App\Models\Demande;
 use Illuminate\Http\Request;
-use TCPDF;
 use Illuminate\Support\Facades\Validator;
 
 class DemandeController extends Controller
@@ -13,6 +14,16 @@ class DemandeController extends Controller
     public function index()
     {
         $demandes = Demande::with('user')->get();
+        return response()->json($demandes);
+    }
+
+    public function getUserDemandes($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        $demandes = Demande::where('user_id', $user->id)->get();
         return response()->json($demandes);
     }
 
