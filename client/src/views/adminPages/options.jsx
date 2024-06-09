@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { Link } from "react-router-dom"
 import { axiosInstance } from "../../axios";
+import { saveAs } from 'file-saver';
 
 const Options = () => {
     const toast = useToast();
@@ -31,6 +32,42 @@ const Options = () => {
             });
         }
     }, []);
+
+    const printCertificate = async (demandId) => {
+        try {
+            console.log('Printing certificate for demand ID:', demandId);
+            const response = await axiosInstance.get(`/demandes/${demandId}/generatePDF`, {
+                responseType: 'blob', // Important to receive the file as a blob
+            });
+
+            console.log('Received response from server:', response);
+
+            const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+            saveAs(pdfBlob, 'attestation.pdf');
+            console.log('Saved PDF blob as "attestation.pdf"');
+        } catch (error) {
+            if (error.name === 'AxiosError' && error.code === 'ERR_NETWORK') {
+                console.error('Network error occurred', error);
+                toast({
+                    description: 'Network error occurred',
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                    name: 'AxiosError',
+                    code: 'ERR_NETWORK',
+                });
+            } else {
+                console.error('There was an error fetching the user demands!', error);
+                toast({
+                    description: 'Une erreur s\'est produite lors de la récupération des demandes.',
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                });
+            }
+        }
+    }
+    
 
     useEffect(() => {
         console.log(notifications);
@@ -64,7 +101,7 @@ const Options = () => {
                                                 <span className="text-sm font-medium">{notification.user.nom} {notification.user.prenom} :</span>
                                                 <span className="text-sm font-medium">{demands.find((demand) => demand.value === notification.type)?.title}</span>
                                             </div>
-                                            <Button colorScheme="facebook" size='xs' className="ml-auto">Imprimer</Button>
+                                            <Button colorScheme="facebook" size='xs' className="ml-auto" onClick={() => printCertificate(notification.id)}>Imprimer</Button>
 
                                         </MenuItem>
                                     ))}
