@@ -53,17 +53,30 @@ const Stepper = () => {
     }
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+    const { name, value, files } = e.target;
+    if (name === 'arrete' && files.length > 0) {
+        // If the input is a file input and files are selected, handle the file
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: files[0],  // Store the file object
+        }));
+    } else {
+        // Handle other input changes
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    }
     }
 
     useEffect(() => {
         console.log(formData);
     }, [formData]);
-
+    
+    const logOut = () => {
+        sessionStorage.clear();
+        window.location.reload();
+    };
     
     if (isLoading === true) {return (
         <div className='text-3xl h-screen font-bold text-blue-900 flex items-center justify-center'>
@@ -78,12 +91,12 @@ const Stepper = () => {
       }else{
     return (
         <div>
-            {step == 1 && <Step1 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
-            {step == 2 && <Step2 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
-            {step == 3 && <Step3 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
-            {step == 4 && <Step4 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
-            {step == 5 && <Step5 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange}/> }
-            {step == 6 && <Step6 setStep={setStep} setFormData={setFormData} formData={formData} handleSubmit={handleSubmit} handleChange={handleChange}/> }
+            {step == 1 && <Step1 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange} logOut={logOut}/> }
+            {step == 2 && <Step2 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange} logOut={logOut}/> }
+            {step == 3 && <Step3 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange} logOut={logOut}/> }
+            {step == 4 && <Step4 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange} logOut={logOut}/> }
+            {step == 5 && <Step5 setStep={setStep} setFormData={setFormData} formData={formData} handleChange={handleChange} logOut={logOut}/> }
+            {step == 6 && <Step6 setStep={setStep} setFormData={setFormData} formData={formData} handleSubmit={handleSubmit} handleChange={handleChange} logOut={logOut}/> }
         </div>
     )
     }
