@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { axiosInstance } from '../../axios';
-import { Heading,Box,Image, Spinner, Menu, MenuButton, MenuList, MenuItem, IconButton} from "@chakra-ui/react"
+import { Heading,Box,Image, Spinner, Menu, MenuButton, MenuList, MenuItem, IconButton, Button} from "@chakra-ui/react"
 import {useRef} from "react";
 import { useToast} from "@chakra-ui/react"
 import { IoAdd } from "react-icons/io5";
@@ -85,6 +85,10 @@ const User = () => {
         });
     }
 };
+    const logOut = () => {
+        sessionStorage.clear();
+        window.location.reload();
+    };
 
     if (isLoading === true) {return (
       <div className='text-3xl h-screen font-bold text-blue-900 flex items-center justify-center'>
@@ -99,9 +103,12 @@ const User = () => {
     }else{
   return (
     <div className="p-3">
+      <div className="flex justify-between items-center">
         <Box boxSize="100px" h="20">
         <Image src='1200px-Université_Abdelmalek_Essaâdi.png' alt='université abdelmalek essadi' objectFit='cover'/>
         </Box>
+        <Button colorScheme="facebook" onClick={()=>logOut()}>Déconnecter</Button>
+      </div>
         <div className="flex flex-col items-center gap-12 w-full">
             <div className="flex flex-col gap-4 items-center">
                 <Heading color='#0F4493' size="lg">Profile</Heading>
@@ -162,8 +169,7 @@ const User = () => {
               <li className='list-none'><b>situation familiale</b> : {userInfos.situation_familiale}</li>
             </p>
           </div>
-        </div>
-        <div className='m-10 shadow-lg p-5'>
+        <div className=' shadow-lg p-5'>
           <Heading color='#0F4493' size="md" marginBottom="5">Informations Professionnelles</Heading>
           <p className='capitalize flex flex-col gap-2'>
             <li className='list-none'><b>Type de Personnel</b> : {userInfos.type_personnel}</li>
@@ -187,6 +193,7 @@ const User = () => {
             <li className='list-none'><b>Date mouvement</b> : {userInfos.date_mouvement}</li>
             <li className='list-none'><b>Date d'expiration de mouvement</b> : {userInfos.date_expiration_mouvement}</li>
           </p>
+        </div>
         </div>
     </div>
   )

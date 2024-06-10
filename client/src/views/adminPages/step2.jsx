@@ -1,14 +1,17 @@
 import { Heading,Box,Image,Input,Button,Select} from "@chakra-ui/react"
 import Provinces from "./staticData/provinces"
 
-const Step2 = ({setStep,formData,handleChange}) => {
+const Step2 = ({setStep,formData,handleChange,logOut}) => {
 
 
   return (
     <div className="p-3">
-        <Box boxSize="100px" h="20">
-        <Image src='1200px-Université_Abdelmalek_Essaâdi.png' alt='université abdelmalek essadi' objectFit='cover'/>
-        </Box>
+        <div className="flex justify-between">
+            <Box boxSize="100px" h="20">
+            <Image src='1200px-Université_Abdelmalek_Essaâdi.png' alt='université abdelmalek essadi' objectFit='cover'/>
+            </Box>
+            <Button colorScheme="facebook" onClick={()=>logOut()}>Déconnecter</Button>
+        </div>
         <div className="flex flex-col items-center gap-14">
             <div className="flex flex-col gap-4 items-center">
                 <Heading color='#0F4493' size="lg" textAlign="center" textTransform="capitalize">Informations personnelles</Heading>

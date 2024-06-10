@@ -2,11 +2,19 @@ import { Heading,Box,Image,Text} from "@chakra-ui/react"
 import { Link } from "react-router-dom"
 
 const UserOptions = () => {
+
+    const logOut = () => {
+        sessionStorage.clear();
+        window.location.reload();
+    };
     return(
         <div className="p-3">
-            <Box boxSize="100px" h="20">
-            <img src='1200px-Université_Abdelmalek_Essaâdi.png' alt='université abdelmalek essadi' objectFit='cover'/>
-            </Box>
+      <div className="flex justify-between items-center">
+        <Box boxSize="100px" h="20">
+        <Image src='1200px-Université_Abdelmalek_Essaâdi.png' alt='université abdelmalek essadi' objectFit='cover'/>
+        </Box>
+        <Button colorScheme="facebook" onClick={()=>logOut()}>Déconnecter</Button>
+      </div>
             <div className="flex flex-col items-center gap-12">
                 <div className="flex flex-col gap-4 items-center">
                     <Heading color='#0F4493' size="lg">Choisissez une action !</Heading>

@@ -77,6 +77,11 @@ const Options = () => {
         getUserDemandes();
     }, []);
 
+    const logOut = () => {
+        sessionStorage.clear();
+        window.location.reload();
+    };
+
     return(
         <div className="p-3">
             <div className="flex justify-between items-center">
@@ -133,7 +138,7 @@ const Options = () => {
                             )}
                         </MenuList>
                     </Menu>
-                    <Button colorScheme="facebook" onClick={()=>""}>Déconnecter</Button>
+                    <Button colorScheme="facebook" onClick={()=>logOut()}>Déconnecter</Button>
 
                 </div>
             </div>

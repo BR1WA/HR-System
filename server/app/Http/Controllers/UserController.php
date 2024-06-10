@@ -109,15 +109,16 @@ class UserController extends Controller
             'email' => 'nullable|email|unique:users',
             'type' => 'nullable|string',
             'is_archived' => 'boolean',
-            // briwa hadi dyal arreter
-            'arreter' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         // Créer un nouvel utilisateur
         $user = User::create($validatedData);
-        if ($request->hasFile('arreter')) {
-            $request->file('arreter')->storeAs('public/Arreters', $user->id.'.jpg');
-            $user->arreter = asset("storage/Arreters/{$user->id}.jpg");
+        if ($request->hasFile('arrete')) {
+                $request->validate([
+                    'avatar' => ['required', 'file', 'mimes:jpg', 'max:2048']
+                ]);
+            $request->file('arrete')->storeAs('public/Arreters', $user->id.'.jpg');
+            $user->arrete = asset("storage/Arreters/{$user->id}.jpg");
             $user->save();
         }
         return response()->json($user, 201);
@@ -184,17 +185,17 @@ class UserController extends Controller
             'email' => 'nullable|email|unique:users,email,' . $id,
             'type' => 'nullable|string',
             'is_archived' => 'boolean',
-            // briwa hadi dyal arreter
-            'arreter' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            // briwa hadi dyal arrete
+            'arrete' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         // Mettre à jour l'utilisateur
         $user = User::findOrFail($id);
         $user->update($validatedData);
-        // briwa hadou dyal arreter
-        if ($request->hasFile('arreter')) {
-            $request->file('arreter')->storeAs('public/Arreters', $user->id.'.jpg');
-            $user->arreter = asset("storage/Arreters/{$user->id}.jpg");
+        // briwa hadou dyal arrete
+        if ($request->hasFile('arrete')) {
+            $request->file('arrete')->storeAs('public/Arreters', $user->id.'.jpg');
+            $user->arrete = asset("storage/Arreters/{$user->id}.jpg");
             $user->save();
         }
         return response()->json($user);
