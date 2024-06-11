@@ -129,12 +129,14 @@ class DemandeController extends Controller
         
         $pdf->writeHTML($content, true, false, true, false, '');
         
-        // Set headers to force download
-        header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="attestation.pdf"');
+        // Set the path where you want to store the PDF file
+        $storagePath = storage_path('app/public/Attestations/attestation.pdf');
 
-        // Output PDF document
-        return $pdf->Output('attestation.pdf', 'D');
+        // Output PDF document to the storage path
+        $pdf->Output($storagePath, 'F');
+
+        // Optionally, you can return the storage path or any other response
+        return asset("storage/Attestations/attestation.pdf");
 
         // Update the request status to 'valider'
         //$demande->update(['traitement' => 'valider']);
