@@ -194,6 +194,18 @@ const User = () => {
             <li className='list-none'><b>Date d'expiration de mouvement</b> : {userInfos.date_expiration_mouvement}</li>
           </p>
         </div>
+        <div className=' shadow-lg p-5'>
+          <Heading color='#0F4493' size="md" marginBottom="5">Dernier Arrete</Heading>
+          <div className='flex flex-col gap-6 items-start'>
+            <Image
+              src={userInfos.arrete}
+              alt='Arrete'
+            />
+            <Button colorScheme="facebook" onClick={()=>{
+              window.open(userInfos.arrete)
+            }}>Télécharger</Button>
+          </div>
+        </div>
         </div>
     </div>
   )

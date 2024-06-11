@@ -11,24 +11,62 @@ import { Spinner } from '@chakra-ui/react';
 
 const Stepper = () => {
     const [step, setStep] = useState(1);
-    const [formData, setFormData] = useState({type : sessionStorage.getItem("type")});
+    const [formData, setFormData] = useState({
+    type : '',
+    ppr: '',
+    nom: '',
+    prenom: '',
+    nom_ar: '',
+    prenom_ar: '',
+    cin: '',
+    genre: '',
+    lieu_naissance: '',
+    adresse: '',
+    telephone: '',
+    situation_familiale: '',
+    nationalite: '',
+    grade: '',
+    type_personnel: '',
+    departement: '',
+    diplome: '',
+    specialite: '',
+    etabl_diplome: '',
+    situation_administrative: '',
+    fonction_exercee: '',
+    service_affectation: '',
+    type_mouvement: '',
+    organisme_accueil: '',
+    date_mouvement: '',
+    date_expiration_mouvement: '',
+    date_naissance: '',
+    date_debut_fonction: '',
+    date_recrutement: '',
+    echelle: '',
+    echelon: '',
+    indice: '',
+    email: '',
+    type: '',
+    arrete: null
+  });
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
     
     const fetchData = async () => {
-        setIsLoading(true)
+        if(sessionStorage.getItem("user")){
         try {
             const response = await axiosInstance.get(`/users/${sessionStorage.getItem('user')}`);
             console.log('Response:', response.data);
             setFormData(response.data);
             console.log(response.data);
-            setIsLoading(false);
         } catch (error) {
             console.error('There was an error fetching the data !', error);
         } finally {
             setIsLoading(false)
         }
+    }else{
+        setIsLoading(false)
+    }
     }
     
     useEffect(() => {
@@ -36,14 +74,19 @@ const Stepper = () => {
     }, []);
 
     const handleSubmit = async () => {
+        const data = new FormData();
+        for (const key in formData) {
+        data.append(key, formData[key]);
+        }
+        data.append("type", sessionStorage.getItem("type"));
       try {
         
         if(sessionStorage.getItem("user")){
-            const response = await axiosInstance.put(`/users/${sessionStorage.getItem("user")}`, formData);
+            const response = await axiosInstance.put(`/users/${sessionStorage.getItem("user")}`, data);
             console.log('Response:', response.data);
             navigate('/options');
         }else{
-            const response = await axiosInstance.post('/users', formData);
+            const response = await axiosInstance.post('/users', data);
             console.log('Response:', response.data);
             navigate('/options');
         }

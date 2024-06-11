@@ -123,12 +123,12 @@ const Step4 = ({setStep,formData,handleChange,logOut}) => {
             value={formData.indice} 
             onChange={handleChange} 
             required 
-        > {formData.type == "enseignant" ? Indices.enseignants.map(indice => (
-            <option key={indice.value} value={indice.value}>
+        > {formData.type == "enseignant" ? Indices.enseignants.map((indice, index) => (
+            <option key={index} value={indice.value}>
             {indice.value}
             </option>
-        )) : Indices.fonctionnaires.map(indice => (
-            <option key={indice.value} value={indice.value}>
+        )) : Indices.fonctionnaires.map((indice, index) => (
+            <option key={index} value={indice.value}>
             {indice.value}
             </option>
         ))}
