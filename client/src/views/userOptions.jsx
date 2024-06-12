@@ -1,4 +1,4 @@
-import { Heading,Box,Image,Text} from "@chakra-ui/react"
+import { Heading,Box,Image,Text, Button} from "@chakra-ui/react"
 import { Link } from "react-router-dom"
 
 const UserOptions = () => {
