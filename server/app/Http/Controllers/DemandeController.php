@@ -87,15 +87,18 @@ class DemandeController extends Controller
     $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
     $pdf->SetFont('dejavusans', '', 12, '', true);
     $pdf->AddPage();
+    $currentDate = date('d/m/Y');
 
     $viewData = [
         'nom' => $user->nom,
         'prenom' => $user->prenom,
         'date_debut' => $demande->date_debut,
         'date_fin' => $demande->date_fin,
+        'date' => $currentDate,
         'grade' => $user->grade,
         'cin' => $user->cin,
-    ];
+        'ppr' => $user->ppr
+];
 
     $content = '';
 
