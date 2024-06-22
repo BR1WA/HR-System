@@ -111,7 +111,7 @@ const User = () => {
       </div>
         <div className="flex flex-col items-center gap-12 w-full">
             <div className="flex flex-col gap-4 items-center">
-                <Heading color='#0F4493' size="lg">Profile</Heading>
+                <Heading color='#0F4493' size="lg">Profil</Heading>
                 <span className="bg-[#0F4493] w-12 h-0.5"></span>
             </div>
             <div className='flex flex-col items-center gap-3 relative'>

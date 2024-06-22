@@ -35,9 +35,9 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function archives()
+    public function archive()
     {
-        return $this->hasMany(Archive::class);
+        return $this->hasOne(Archive::class);
     }
 
     public function promotions()

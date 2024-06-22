@@ -35,6 +35,7 @@ const handleSubmit = async (e) => {
             if (response.data.success) {
                 if(rememberMe) setCookie('user_id', response.data.data.user.id,7);
                 sessionStorage.setItem('id', response.data.data.user.id);
+                sessionStorage.setItem('type', response.data.data.user.type);
                 sessionStorage.setItem('token',response.data.data.token)
                 response.data.data.user.role==='admin' ? navigate('/options') : navigate('/userOptions')
             }

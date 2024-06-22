@@ -1,7 +1,6 @@
 import { Heading,Box,Image,Text, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, Input, ModalFooter, Select, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, useToast, Menu, MenuButton, MenuList, MenuItem, IconButton} from "@chakra-ui/react"
 import { useCallback, useEffect, useRef, useState } from "react";
 import { axiosInstance } from "../axios";
-import { RxHamburgerMenu } from "react-icons/rx";
 import { IoMdNotificationsOutline } from "react-icons/io";
 
 
@@ -14,6 +13,7 @@ const Attestations = () => {
     const toast = useToast();
     const [notifications, setNotifications] = useState({});
     const [showMore, setShowMore] = useState(false);
+    const [type, setType] = useState(sessionStorage.getItem('type'));
 
     const demands = [
         { id: 1, title: 'Demande de congé annuel', description: 'Une demande présentée par l\'employé pour obtenir un congé annuel du travail.', value: 'demande__vacance_annuelle' },
@@ -85,10 +85,6 @@ const Attestations = () => {
             [name]: value
         });
     }
-    
-    useEffect(() => {
-        console.log(formData);
-    }, [formData]);
 
     const getUserDemandes = useCallback(async () => {
         try {
@@ -106,12 +102,14 @@ const Attestations = () => {
     }, []);
 
     useEffect(() => {
-        console.log(notifications);
-    }, [notifications]);
-
-    useEffect(() => {
         getUserDemandes();
     }, []);
+
+    const logOut = () => {
+        sessionStorage.clear();
+        window.location.reload();
+    };
+    
   return (
         <div className="p-3">
             <div className="flex justify-between items-center">
@@ -166,7 +164,7 @@ const Attestations = () => {
                             )}
                         </MenuList>
                     </Menu>
-                    <Button colorScheme="facebook" onClick={()=>""}>Déconnecter</Button>
+                    <Button colorScheme="facebook" onClick={()=>logOut()}>Déconnecter</Button>
 
                 </div>
             </div>
@@ -177,15 +175,17 @@ const Attestations = () => {
                 </div>
                 <div className="flex flex-col justify-center gap-5 sm:grid md:grid-cols-3 sm:grid-cols-2 ">
                         {demands.map((demand, index) => (
-                            <div key={index} className="bg-slate-200 p-3 rounded-md flex flex-col gap-2">
-                                <Heading size="md" fontWeight="bold">{demand.title}</Heading>
-                                <Text>{demand.description}</Text>
-                                <div className="flex-grow"></div>
-                                <div className="mt-4 ">
-                                    <Button marginRight="3" colorScheme='facebook' variant='outline' onClick={() => handlePreview(demand.id)}>Aperçu</Button>
-                                    <Button colorScheme="facebook" onClick={()=>{onOpen();setCertificate(demand)}}>Demander</Button>
+                            (type === 'enseignant' && index === 0) ? null : (
+                                <div key={index} className="bg-slate-200 p-3 rounded-md flex flex-col gap-2">
+                                    <Heading size="md" fontWeight="bold">{demand.title}</Heading>
+                                    <Text>{demand.description}</Text>
+                                    <div className="flex-grow"></div>
+                                    <div className="mt-4 ">
+                                        <Button marginRight="3" colorScheme='facebook' variant='outline' onClick={() => handlePreview(demand.id)}>Aperçu</Button>
+                                        <Button colorScheme="facebook" onClick={()=>{onOpen();setCertificate(demand)}}>Demander</Button>
+                                    </div>
                                 </div>
-                            </div>
+                            )
                         ))}
                 </div>
                 <Modal

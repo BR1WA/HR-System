@@ -50,7 +50,7 @@ class UserController extends Controller
     public function index()
     {
         // Récupérer tous les utilisateurs
-        $users = User::all(); 
+        $users = User::with('archive')->get(); 
         foreach ($users as $user) {
             $avatarPath = "public/Avatars/{$user->id}.jpg";
             if (Storage::exists($avatarPath)) {
