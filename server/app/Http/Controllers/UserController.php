@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,8 +25,10 @@ class UserController extends Controller
         }catch(Exception $e) {
             return response()->json($e);
         }
-     }
+    }
 
+
+    
     public function deleteAvatar($id)
     {
         try {
@@ -47,7 +50,7 @@ class UserController extends Controller
     public function index()
     {
         // Récupérer tous les utilisateurs
-        $users = User::all(); 
+        $users = User::with('archive')->get(); 
         foreach ($users as $user) {
             $avatarPath = "public/Avatars/{$user->id}.jpg";
             if (Storage::exists($avatarPath)) {
@@ -100,9 +103,9 @@ class UserController extends Controller
             'date_naissance' => 'nullable|date',
             'date_debut_fonction' => 'nullable|date',
             'date_recrutement' => 'nullable|date',
-            'echelle' => 'nullable|integer',
-            'echelon' => 'nullable|integer',
-            'indice' => 'nullable|integer',
+            'echelle' => 'nullable|string',
+            'echelon' => 'nullable|string',
+            'indice' => 'nullable|string',
             'email' => 'nullable|email|unique:users',
             'type' => 'nullable|string',
             'is_archived' => 'boolean',
@@ -110,6 +113,15 @@ class UserController extends Controller
 
         // Créer un nouvel utilisateur
         $user = User::create($validatedData);
+        if ($request) {
+                $request->validate([
+                    'arrete' => ['required', 'file', 'mimes:jpg', 'max:2048']
+                ]);
+                $request->file('arrete')->storeAs('public/Arrete', $user->id.'.jpg');
+                $arrete=asset("storage/Arrete/{$user->id}.jpg");
+                return response()->json(['message' => 'The Arrete was set successfully', 'Arrete' =>$arrete]);
+            return response()->json($user, 201);
+        }
         return response()->json($user, 201);
     }
 
@@ -125,6 +137,12 @@ class UserController extends Controller
             $user->avatar = asset("storage/Avatars/$id.jpg");
         } else {
             $user->avatar = null; 
+        }
+        $arrete = "public/Arrete/$id.jpg";
+        if (Storage::exists($arrete)) {
+            $user->arrete = asset("storage/Arrete/$id.jpg");
+        } else {
+            $user->arrete = null; 
         }
         return response()->json($user);
         } catch (Exception $e) {
@@ -168,17 +186,25 @@ class UserController extends Controller
             'date_naissance' => 'nullable|date',
             'date_debut_fonction' => 'nullable|date',
             'date_recrutement' => 'nullable|date',
-            'echelle' => 'nullable|integer',
-            'echelon' => 'nullable|integer',
-            'indice' => 'nullable|integer',
+            'echelle' => 'nullable|string',
+            'echelon' => 'nullable|string',
+            'indice' => 'nullable|string',
             'email' => 'nullable|email|unique:users,email,' . $id,
             'type' => 'nullable|string',
             'is_archived' => 'boolean',
+            // briwa hadi dyal arrete
+            'arrete' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         // Mettre à jour l'utilisateur
         $user = User::findOrFail($id);
         $user->update($validatedData);
+        // briwa hadou dyal arrete
+        if ($request->hasFile('arrete')) {
+            $request->file('arrete')->storeAs('public/Arreters', $user->id.'.jpg');
+            $user->arrete = asset("storage/Arreters/{$user->id}.jpg");
+            $user->save();
+        }
         return response()->json($user);
     }
 

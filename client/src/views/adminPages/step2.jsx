@@ -1,12 +1,17 @@
 import { Heading,Box,Image,Input,Button,Select} from "@chakra-ui/react"
+import Provinces from "./staticData/provinces"
 
-const Step2 = ({setStep,formData,handleChange}) => {
+const Step2 = ({setStep,formData,handleChange,logOut}) => {
+
 
   return (
     <div className="p-3">
-        <Box boxSize="100px" h="20">
-        <Image src='1200px-Université_Abdelmalek_Essaâdi.png' alt='université abdelmalek essadi' objectFit='cover'/>
-        </Box>
+        <div className="flex justify-between">
+            <Box boxSize="100px" h="20">
+            <Image src='1200px-Université_Abdelmalek_Essaâdi.png' alt='université abdelmalek essadi' objectFit='cover'/>
+            </Box>
+            <Button colorScheme="facebook" onClick={()=>logOut()}>Déconnecter</Button>
+        </div>
         <div className="flex flex-col items-center gap-14">
             <div className="flex flex-col gap-4 items-center">
                 <Heading color='#0F4493' size="lg" textAlign="center" textTransform="capitalize">Informations personnelles</Heading>
@@ -51,9 +56,9 @@ const Step2 = ({setStep,formData,handleChange}) => {
         </label>
     </div>
     <div className="relative">
-        <select 
+        <Select 
             id="floating_genre" 
-            className="block px-2.5 pb-2.5 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 border appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer placeholder-gray-500" 
+            className="block px-2.5 pt-1 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 border appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer placeholder-gray-500" 
             name="genre" 
             value={formData.genre} 
             onChange={handleChange} 
@@ -62,7 +67,7 @@ const Step2 = ({setStep,formData,handleChange}) => {
             <option value="" disabled>Genre</option>
             <option value="homme">homme</option>
             <option value="femme">femme</option>
-        </select>
+        </Select>
         <label 
             htmlFor="floating_genre" 
             className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
@@ -71,16 +76,19 @@ const Step2 = ({setStep,formData,handleChange}) => {
         </label>
     </div>
     <div className="relative">
-        <input 
-            type="text" 
+        <Select 
             id="floating_lieu_naissance" 
-            className="block px-2.5 pb-2.5 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 border appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
-            placeholder="" 
+            className="block px-2.5 pb-2.5 pt-1 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 border appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
             name="lieu_naissance" 
             value={formData.lieu_naissance} 
             onChange={handleChange} 
             required 
-        />
+        > {Provinces.map(province => (
+            <option key={province.value} value={province.value}>
+            {province.label}
+            </option>
+        ))}
+        </Select>
         <label 
             htmlFor="floating_lieu_naissance" 
             className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"

@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('archives', function (Blueprint $table) {
-            $table->id(); 
-            $table->unsignedBigInteger('user_id'); 
-            $table->date('date')->nullable(); 
+        Schema::create('demandes', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->string('type'); 
+            $table->date('date_debut')->nullable(); 
+            $table->date('date_fin')->nullable();  
             $table->string('raison')->nullable(); 
-            $table->timestamps(); 
+            $table->string('motif')->nullable(); 
+            $table->timestamps();
             // Définir la clé étrangère
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('archives');
+        Schema::dropIfExists('demandes');
     }
 };
