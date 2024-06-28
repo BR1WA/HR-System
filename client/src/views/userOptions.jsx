@@ -27,7 +27,7 @@ const UserOptions = () => {
                     </Box>
                     <Box as={Link} to="/attestations" display="flex" flexDirection="column" alignItems="center" justifyContent="center" backgroundColor="#0F4493" w="250px" h="250px" color="white" borderRadius="8" _hover={{ bg: 'blue.800' }} cursor="pointer" transition="background-color 0.2s">
                         <img width="80" src="https://img.icons8.com/ios-filled/100/ffffff/contract.png" alt="contract"/>
-                        <Text fontSize="2xl" className="font-bold text-center">DEMAND D'ATTESTATIONS</Text>
+                        <Text fontSize="2xl" className="font-bold text-center">DEMANDE D'ATTESTATIONS</Text>
                     </Box>
                 </div>
             </div>

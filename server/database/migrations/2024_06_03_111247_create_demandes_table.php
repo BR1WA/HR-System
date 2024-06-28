@@ -18,7 +18,8 @@ return new class extends Migration
             $table->date('date_debut')->nullable(); 
             $table->date('date_fin')->nullable();  
             $table->string('raison')->nullable(); 
-            $table->string('motif')->nullable(); 
+            $table->string('motif')->nullable();
+            $table->string('traitement')->default('en-cours');
             $table->timestamps();
             // Définir la clé étrangère
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

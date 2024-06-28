@@ -18,6 +18,8 @@ const Users = () => {
     const [search, setSearch] = useState("");
     const [notifications, setNotifications] = useState({});
     const [showMore, setShowMore] = useState(false);
+    const [toasted, setToasted] = useState(false);
+    const [notificationCount, setNotificationCount] = useState(0);
 
     const demands = [
         { id: 1, title: 'Demande de congé annuel', description: 'Une demande présentée par l\'employé pour obtenir un congé annuel du travail.', value: 'demande__vacance_annuelle' },
@@ -36,12 +38,29 @@ const Users = () => {
         }
     }, []);
 
+    useEffect(() => {
+        if (Array.isArray(notifications)) {
+            const count = notifications.filter(notification => notification.traitement !== 'validé').length;
+            setNotificationCount(count);
+        }
+    }, [notifications]);
+
+
     const printCertificate = async (demandId) => {
         try {
             console.log('Printing certificate for demand ID:', demandId);
             const response = await axiosInstance.get(`/demandes/${demandId}/generatePDF`);
             console.log('Received response from server:', response);
             window.open(response.data, '_blank');
+
+            // Update the notifications state
+            const updatedNotifications = notifications.map(notification => {
+                if (notification.id === demandId) {
+                    return { ...notification, traitement: 'validé' };
+                }
+                return notification;
+            });
+            setNotifications(updatedNotifications);
         } catch (error) {
             console.log(error);
         }
@@ -55,24 +74,82 @@ const Users = () => {
         getUserDemandes();
     }, []);
 
-    const fetchData = async () => {
-        try {
-            const response = await axiosInstance.get('/users');
-            console.log('Response:', response.data);
-        setUsers(response.data.map(user => {
-            const isArchived = user.is_archived;
-            const archiveRaison = isArchived ? user.archive.raison : null;
-            return [user.nom, user.type, user.id, user.avatar, user.prenom, isArchived, archiveRaison];
-        }));
-        console.log(users);
-        } catch (error) {
-            console.error('There was an error fetching the data!', error);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axiosInstance.get('/users');
+                console.log('Response:', response.data);
+                setUsers(response.data.map(user => {
+                    const isArchived = user.is_archived;
+                    const archiveRaison = isArchived ? user.archive.raison : null;
+                    
+                    return [user.nom, user.type, user.id, user.avatar, user.prenom, isArchived, archiveRaison, user.date_recrutement];
+                }));
+                console.log(users);
+            } catch (error) {
+                console.error('There was an error fetching the data!', error);
+            }
         }
-      }
+        fetchData();
+    }, []);
 
       useEffect(() => {
-        fetchData();
-      }, []);
+    users.forEach(user => {
+        const recruitmentDate = new Date(user[7]);
+        const today = new Date();
+        
+        // Calculate the target anniversary dates
+        const twoYearsAgo = new Date(today);
+        twoYearsAgo.setFullYear(today.getFullYear() - 2);
+        
+        const fourYearsAgo = new Date(today);
+        fourYearsAgo.setFullYear(today.getFullYear() - 4);
+        
+        const sixYearsAgo = new Date(today);
+        sixYearsAgo.setFullYear(today.getFullYear() - 6);
+        
+        // Calculate the week before each anniversary date
+        const oneWeekBeforeTwoYears = new Date(twoYearsAgo);
+        oneWeekBeforeTwoYears.setDate(twoYearsAgo.getDate() - 7);
+        
+        const oneWeekBeforeFourYears = new Date(fourYearsAgo);
+        oneWeekBeforeFourYears.setDate(fourYearsAgo.getDate() - 7);
+        
+        const oneWeekBeforeSixYears = new Date(sixYearsAgo);
+        oneWeekBeforeSixYears.setDate(sixYearsAgo.getDate() - 7);
+        
+        // Check if the recruitment date falls within the target ranges
+        if(!toasted){
+            if (recruitmentDate >= oneWeekBeforeTwoYears && recruitmentDate <= twoYearsAgo) {
+                toast({
+                    description: `L'utilisateur ${user[0]} ${user[4]} atteindra bientôt 2 ans.`,
+                    status: 'info',
+                    duration: 9000,
+                    isClosable: true,
+                });
+                setToasted(true);
+            } else if (recruitmentDate >= oneWeekBeforeFourYears && recruitmentDate <= fourYearsAgo) {
+                toast({
+                    description: `L'utilisateur ${user[0]} ${user[4]} atteindra bientôt 4 ans.`,
+                    status: 'info',
+                    duration: 9000,
+                    isClosable: true,
+                });
+                setToasted(true);
+            } else if (recruitmentDate >= oneWeekBeforeSixYears && recruitmentDate <= sixYearsAgo) {
+                toast({
+                    description: `L'utilisateur ${user[0]} ${user[4]} atteindra bientôt 6 ans.`,
+                    status: 'info',
+                    duration: 9000,
+                    isClosable: true,
+                });
+                setToasted(true);
+            }
+        }
+    });
+}, [users]);
+
+
 
     const archiveUser = async (userId) => {
     const raison = initialRef.current.value; 
@@ -157,12 +234,17 @@ const Users = () => {
                 </Box>
                 <div className="flex gap-3">
                     <Menu>
-                        <MenuButton
-                            as={IconButton}
-                            aria-label='Options'
-                            icon={<IoMdNotificationsOutline className="text-lg" />}
-                            variant='outline'
-                        />
+                        <div className="relative">
+                            <MenuButton
+                                as={IconButton}
+                                aria-label='Options'
+                                icon={<IoMdNotificationsOutline className="text-lg" />}
+                                variant='outline'
+                            />
+                            {notificationCount > 0 && (
+                                <span className="absolute -left-1 -top-1 text-xs bg-red-500 text-white w-4 h-4 flex items-center justify-center rounded-full">{notificationCount}</span>
+                            )}
+                        </div>
                         <MenuList className="bg-white p-2 shadow-md overflow-y-scroll max-h-96">
                             <div className="space-y-2">
                                 {Array.from(notifications).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
@@ -172,9 +254,12 @@ const Users = () => {
                                             <div className="flex items-center gap-2 mr-2">
                                                 <span className="text-sm font-medium">{notification.user.nom} {notification.user.prenom} :</span>
                                                 <span className="text-sm font-medium">{demands.find((demand) => demand.value === notification.type)?.title}</span>
+                                            {notification.traitement === 'validé' ? (
+                                                <span className="text-sm italic">Imprimé</span>
+                                            ) : (
+                                                <Button colorScheme="facebook" size='xs' className="ml-auto" onClick={() => printCertificate(notification.id)}>Imprimer</Button>
+                                            )}
                                             </div>
-                                            <Button colorScheme="facebook" size='xs' className="ml-auto" onClick={() => printCertificate(notification.id)}>Imprimer</Button>
-
                                         </MenuItem>
                                     ))}
                             </div>
@@ -196,8 +281,13 @@ const Users = () => {
                                         .map((notification) => (
                                             <MenuItem key={notification.id}>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-sm font-medium">{demands.find((demand) => demand.value === notification.type)?.title}</span>
-                                                    <span className="text-xs text-gray-500">{notification.traitement}</span>
+                                                <span className="text-sm font-medium">{notification.user.nom} {notification.user.prenom} :</span>
+                                                <span className="text-sm font-medium">{demands.find((demand) => demand.value === notification.type)?.title}</span>
+                                            {notification.traitement === 'validé' ? (
+                                                <span className="text-sm italic">Imprimé</span>
+                                            ) : (
+                                                <Button colorScheme="facebook" size='xs' className="ml-auto" onClick={() => printCertificate(notification.id)}>Imprimer</Button>
+                                            )}
                                                 </div>
                                             </MenuItem>
                                         ))}

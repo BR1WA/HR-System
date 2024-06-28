@@ -137,7 +137,7 @@ class DemandeController extends Controller
 
         // Output PDF document to the storage path
         $pdf->Output($storagePath, 'F');
-        $demande->update(['traitement' => 'valider']);
+        $demande->update(['traitement' => 'validé']);
 
         // Optionally, you can return the storage path or any other response
         return asset("storage/Attestations/attestation.pdf");
