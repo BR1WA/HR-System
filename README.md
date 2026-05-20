@@ -8,6 +8,14 @@ HR-System is a Human Resources management system designed to streamline HR proce
 - **Certificate Requests:** Employees can send certificate requests, and HR can print them.
 - **Custom Statistics:** Display customized statistics based on user-selected options.
 
+## Screenshots
+
+### Login Screen
+![Login Screen](login.png)
+
+### Admin Dashboard
+![Admin Dashboard](dashboard.png)
+
 ## Technologies Used
 
 - **Frontend:** React JS
