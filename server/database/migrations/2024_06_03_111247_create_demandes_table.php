@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('date_fin')->nullable();  
             $table->string('raison')->nullable(); 
             $table->string('motif')->nullable(); 
+            $table->string('destination_torab_lwatani')->nullable();
             $table->timestamps();
             // Définir la clé étrangère
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

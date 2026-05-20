@@ -113,14 +113,13 @@ class UserController extends Controller
 
         // Créer un nouvel utilisateur
         $user = User::create($validatedData);
-        if ($request) {
-                $request->validate([
-                    'arrete' => ['required', 'file', 'mimes:jpg', 'max:2048']
-                ]);
-                $request->file('arrete')->storeAs('public/Arrete', $user->id.'.jpg');
-                $arrete=asset("storage/Arrete/{$user->id}.jpg");
-                return response()->json(['message' => 'The Arrete was set successfully', 'Arrete' =>$arrete]);
-            return response()->json($user, 201);
+        if ($request->hasFile('arrete')) {
+            $request->validate([
+                'arrete' => ['file', 'mimes:jpg,jpeg,png', 'max:2048']
+            ]);
+            $request->file('arrete')->storeAs('public/Arrete', $user->id.'.jpg');
+            $user->arreter = asset("storage/Arrete/{$user->id}.jpg");
+            $user->save();
         }
         return response()->json($user, 201);
     }
@@ -199,10 +198,9 @@ class UserController extends Controller
         // Mettre à jour l'utilisateur
         $user = User::findOrFail($id);
         $user->update($validatedData);
-        // briwa hadou dyal arrete
         if ($request->hasFile('arrete')) {
-            $request->file('arrete')->storeAs('public/Arreters', $user->id.'.jpg');
-            $user->arrete = asset("storage/Arreters/{$user->id}.jpg");
+            $request->file('arrete')->storeAs('public/Arrete', $user->id.'.jpg');
+            $user->arreter = asset("storage/Arrete/{$user->id}.jpg");
             $user->save();
         }
         return response()->json($user);

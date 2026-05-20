@@ -25,7 +25,7 @@ class OtpNotification extends Notification
         $this->message = "use this code to authenticate";
         $this->subject = "Otp Code";
         $this->fromMail = "salaheddinezouitni00@.com";
-        $this->mailer="smtp";
+        $this->mailer=config('mail.default', 'smtp');
         $this->otp=new Otp;
     }
 
