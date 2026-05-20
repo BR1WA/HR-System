@@ -1,7 +1,8 @@
-import React from 'react';
-import { Box, Flex, Icon, Link, Text, Divider, Button, Avatar, IconButton, Drawer, DrawerContent, DrawerOverlay, useDisclosure } from '@chakra-ui/react';
+import React, { useEffect, useRef } from 'react';
+import { Box, Flex, Icon, Link, Text, Divider, Button, Avatar, IconButton, Drawer, DrawerContent, DrawerOverlay, useDisclosure, Image, useToast } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { FiHome, FiUsers, FiFileText, FiBarChart2, FiLogOut, FiMenu, FiPlusCircle } from 'react-icons/fi';
+import { axiosInstance } from '../axios';
 
 const SidebarContent = ({ onClose, ...rest }) => {
   const location = useLocation();
@@ -32,20 +33,23 @@ const SidebarContent = ({ onClose, ...rest }) => {
       color="white"
       {...rest}
     >
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Flex alignItems="center" gap={3}>
-          <Box bg="blue.500" p={2} borderRadius="lg" shadow="0 0 15px #3182ce">
-            <FiUsers size={20} color="white" />
-          </Box>
-          <Text fontSize="xl" fontWeight="extrabold" letterSpacing="widest" bgGradient="linear(to-r, blue.300, teal.300)" bgClip="text">
-            HR PORTAL
-          </Text>
-        </Flex>
+      <Flex direction="column" align="center" justify="center" w="full" py={5} px={4} gap={3}>
+        <Box bg="white" p={2.5} borderRadius="2xl" shadow="0 4px 20px rgba(0,0,0,0.25)" display="inline-flex" alignItems="center" justifyContent="center">
+          <Image 
+            src="/1200px-Université_Abdelmalek_Essaâdi.png" 
+            alt="Université Abdelmalek Essaâdi" 
+            maxW="110px" 
+            objectFit="contain"
+          />
+        </Box>
+        <Text fontSize="2xs" fontWeight="extrabold" color="blue.300" letterSpacing="widest" textAlign="center" lineHeight="short">
+          UNIVERSITÉ ABDELMALEK ESSAÂDI
+        </Text>
       </Flex>
       <Box px="4">
         <Divider opacity={0.15} mb={6} />
       </Box>
-      <Flex direction="column" justify="space-between" h="calc(100vh - 120px)" px="4" pb="6">
+      <Flex direction="column" justify="space-between" h="calc(100vh - 170px)" px="4" pb="6">
         <Flex direction="column" gap={2}>
           {navItems.map((link) => {
             const isActive = location.pathname === link.path;
@@ -127,6 +131,56 @@ const SidebarContent = ({ onClose, ...rest }) => {
 
 export default function Sidebar({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+  const prevCountRef = useRef(null);
+
+  useEffect(() => {
+    const userType = sessionStorage.getItem('type');
+    if (userType !== 'admin') return;
+
+    const pollDemandes = async () => {
+      try {
+        const response = await axiosInstance.get('/demandes');
+        // Filter pending demands
+        const pendingDemandes = response.data.filter(d => d.traitement === 'en cours');
+        const currentCount = pendingDemandes.length;
+
+        if (prevCountRef.current !== null && currentCount > prevCountRef.current) {
+          const latest = pendingDemandes[pendingDemandes.length - 1];
+          if (latest) {
+            const employeeName = latest.user ? `${latest.user.prenom} ${latest.user.nom}` : 'Un employé';
+            const labelMap = {
+              'demande__vacance_annuelle': 'Congé annuel',
+              'demande_quitter_territoire_national': 'Quitter le territoire',
+              'demande_attestation_salaire': 'Attestation de salaire',
+              'demande_attestation_travail': 'Attestation de travail',
+              'demande_licence_exceptionnelle': 'Permis exceptionnel'
+            };
+            const typeLabel = labelMap[latest.type] || latest.type;
+
+            toast({
+              title: 'Nouvelle demande reçue !',
+              description: `${employeeName} a soumis une demande pour : ${typeLabel}.`,
+              status: 'info',
+              duration: 8000,
+              isClosable: true,
+              position: 'top-right',
+              variant: 'solid'
+            });
+          }
+        }
+        prevCountRef.current = currentCount;
+      } catch (err) {
+        console.error('Error polling notifications:', err);
+      }
+    };
+
+    pollDemandes();
+    const interval = setInterval(pollDemandes, 8000);
+
+    return () => clearInterval(interval);
+  }, [toast]);
+
   return (
     <Box minH="100vh" bg="#f4f6f8">
       {/* Sidebar for Desktop */}
@@ -146,9 +200,17 @@ export default function Sidebar({ children }) {
         color="white"
       >
         <IconButton variant="ghost" onClick={onOpen} aria-label="open menu" icon={<FiMenu />} color="white" _hover={{ bg: 'rgba(255,255,255,0.1)' }} />
-        <Text fontSize="lg" fontWeight="extrabold" bgGradient="linear(to-r, blue.300, teal.300)" bgClip="text">
-          HR PORTAL
-        </Text>
+        <Flex align="center" gap={2}>
+          <Box bg="white" p={1} borderRadius="lg" display="inline-flex" align="center" justify="center">
+            <Image 
+              src="/1200px-Université_Abdelmalek_Essaâdi.png" 
+              alt="Université Abdelmalek Essaâdi" 
+              maxH="32px"
+              objectFit="contain"
+            />
+          </Box>
+          <Text fontSize="xs" fontWeight="extrabold" color="blue.300" letterSpacing="widest">UAE HR PORTAL</Text>
+        </Flex>
         <Box w={8} />
       </Flex>
 

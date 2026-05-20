@@ -1,81 +1,231 @@
-import { Heading,Box,Image,Input,Button,useToast,Checkbox} from "@chakra-ui/react"
-import { useState } from "react"
-import axios from "axios"
+import React, { useState } from 'react';
+import { Heading, Box, Image, Input, Button, useToast, Flex, Text, Checkbox } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useCookies } from "react-cookie";
-import { axiosInstance } from "../axios";
+import { useCookies } from 'react-cookie';
+import { axiosInstance } from '../axios';
 
-const Verify = ()=>{
+const Verify = () => {
+  const [code, setCode] = useState('');
+  const [rememberMe, setRememberMe] = useState(true);
+  const [isValid, setIsValid] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [cookies, setCookie] = useCookies(['user']);
+  const toast = useToast();
+  const email = useSelector((state) => state.user.email);
+  const navigate = useNavigate();
 
-const [code,setCode] = useState("");
-const [rememberMe,setRememberMe] = useState(true);
-const [isValid,setIsValid] = useState(false)
-const [isTouched, setIsTouched] = useState(false); 
-const [isLoading, setIsLoading] = useState(false);
-const [cookies,setCookie] = useCookies(['user'])
-const toast = useToast();
-const email = useSelector((state) => state.user.email);
-const navigate = useNavigate();
-
-const handleChange = (e) => {
+  const handleChange = (e) => {
     const newCode = e.target.value;
     setCode(newCode);
     setIsValid(/^\d{6}$/.test(newCode));
     setIsTouched(true);
-}
-const handleSubmit = async (e) => {
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true)
+    setIsLoading(true);
     if (isValid && isTouched && code) {
-        try {
-            const response = await axiosInstance.post('http://127.0.0.1:8000/api/verifiy-email', { email,otp: code });
-            console.log('API Response:', response.data);
-            if (response.data.success) {
-                if(rememberMe) setCookie('user_id', response.data.data.user.id,7);
-                sessionStorage.setItem('id', response.data.data.user.id);
-                sessionStorage.setItem('type', response.data.data.user.type);
-                sessionStorage.setItem('token',response.data.data.token)
-                response.data.data.user.role==='admin' ? navigate('/options') : navigate('/userOptions')
-            }
-            toast({
-                description: response.data.message,
-                status: response.data.success ? 'success' : 'error',
-                duration: 9000,
-                isClosable: true,
-            });
-        } catch (error) {
-            const errorMessage = error.response && error.response.data && error.response.data.message ? error.response.data.message : error.message;
-            console.error('API Error:', error);
-            toast({
-                description: typeof errorMessage === 'string' ? errorMessage : 'Code invalide.',
-                status: 'error',
-                duration: 9000,
-                isClosable: true,
-            });
-        }finally{
-            setIsLoading(false);
+      try {
+        const response = await axiosInstance.post('http://127.0.0.1:8000/api/verifiy-email', { email, otp: code });
+        console.log('API Response:', response.data);
+        if (response.data.success) {
+          if (rememberMe) setCookie('user_id', response.data.data.user.id, 7);
+          sessionStorage.setItem('id', response.data.data.user.id);
+          sessionStorage.setItem('type', response.data.data.user.type);
+          sessionStorage.setItem('token', response.data.data.token);
+          
+          toast({
+            title: 'Authentification réussie',
+            description: 'Bienvenue sur votre portail RH.',
+            status: 'success',
+            duration: 4000,
+            isClosable: true,
+            position: 'top',
+          });
+
+          response.data.data.user.role === 'admin' ? navigate('/options') : navigate('/userOptions');
+        } else {
+          toast({
+            title: 'Erreur',
+            description: response.data.message || 'Code de vérification invalide.',
+            status: 'error',
+            duration: 6000,
+            isClosable: true,
+            position: 'top',
+          });
         }
+      } catch (error) {
+        const errorMessage = error.response && error.response.data && error.response.data.message ? error.response.data.message : error.message;
+        console.error('API Error:', error);
+        toast({
+          title: 'Code invalide',
+          description: typeof errorMessage === 'string' ? errorMessage : 'Code de vérification invalide.',
+          status: 'error',
+          duration: 6000,
+          isClosable: true,
+          position: 'top',
+        });
+      } finally {
+        setIsLoading(false);
+      }
     }
-};
-    return(
-        <div className="p-3">
-            <Box boxSize="100px" h="20">
-            <Image src='1200px-Université_Abdelmalek_Essaâdi.png' alt='université abdelmalek essadi' objectFit='cover'/>
+  };
+
+  return (
+    <Flex
+      minH="100vh"
+      align="center"
+      justify="center"
+      bg="linear-gradient(135deg, #0a2540 0%, #071e33 100%)"
+      p={4}
+      position="relative"
+      overflow="hidden"
+    >
+      {/* Background Decorative Blobs */}
+      <Box
+        position="absolute"
+        top="-10%"
+        left="-10%"
+        w="40vw"
+        h="40vw"
+        borderRadius="full"
+        bg="radial-gradient(circle, rgba(49, 130, 206, 0.15) 0%, rgba(0,0,0,0) 70%)"
+        filter="blur(50px)"
+        pointerEvents="none"
+      />
+      <Box
+        position="absolute"
+        bottom="-10%"
+        right="-10%"
+        w="50vw"
+        h="50vw"
+        borderRadius="full"
+        bg="radial-gradient(circle, rgba(75, 192, 192, 0.12) 0%, rgba(0,0,0,0) 70%)"
+        filter="blur(60px)"
+        pointerEvents="none"
+      />
+
+      {/* Main Glass Card */}
+      <Box
+        maxW="md"
+        w="full"
+        bg="rgba(255, 255, 255, 0.03)"
+        backdropFilter="blur(16px)"
+        border="1px solid rgba(255, 255, 255, 0.08)"
+        borderRadius="3xl"
+        p={{ base: 6, md: 10 }}
+        shadow="2xl"
+        textAlign="center"
+        zIndex={1}
+      >
+        {/* University Logo Box */}
+        <Flex justify="center" mb={6}>
+          <Box
+            bg="white"
+            p={3.5}
+            borderRadius="2xl"
+            shadow="0 8px 30px rgba(0, 0, 0, 0.3)"
+            display="inline-flex"
+            alignItems="center"
+            justifyContent="center"
+            transition="transform 0.3s ease"
+            _hover={{ transform: 'scale(1.05)' }}
+          >
+            <Image
+              src="/1200px-Université_Abdelmalek_Essaâdi.png"
+              alt="Université Abdelmalek Essaâdi Logo"
+              maxW="140px"
+              objectFit="contain"
+            />
+          </Box>
+        </Flex>
+
+        <Heading size="lg" color="white" fontWeight="extrabold" mb={1} letterSpacing="wide">
+          Vérification OTP
+        </Heading>
+        <Text color="gray.400" fontSize="sm" mb={8} fontWeight="medium">
+          Saisissez le code de 6 chiffres envoyé à votre boîte de messagerie
+        </Text>
+
+        <form onSubmit={handleSubmit}>
+          <Flex direction="column" gap={5}>
+            <Box textAlign="left">
+              <Input
+                variant="filled"
+                type="text"
+                placeholder="code de 6 chiffres"
+                size="lg"
+                borderRadius="xl"
+                bg="rgba(255, 255, 255, 0.05)"
+                border="1px solid rgba(255, 255, 255, 0.1)"
+                color="white"
+                _hover={{
+                  bg: 'rgba(255, 255, 255, 0.08)',
+                  borderColor: 'rgba(255, 255, 255, 0.2)',
+                }}
+                _focus={{
+                  bg: 'rgba(255, 255, 255, 0.08)',
+                  borderColor: 'blue.400',
+                  boxShadow: '0 0 0 1px #3182ce',
+                }}
+                _placeholder={{ color: 'gray.500' }}
+                isInvalid={!isValid && isTouched}
+                value={code}
+                onChange={handleChange}
+                h="12"
+                textAlign="center"
+                fontSize="xl"
+                letterSpacing="4px"
+              />
+              {!isValid && isTouched && (
+                <Text color="red.300" fontSize="xs" mt={1.5} pl={1} fontWeight="semibold" textAlign="center">
+                  Veuillez entrer un code à 6 chiffres valide.
+                </Text>
+              )}
             </Box>
-            <div className="flex flex-col items-center gap-20">
-                <div className="flex flex-col gap-4 items-center">
-                    <Heading color='#0F4493' size="lg">Authentifier vous!</Heading>
-                    <span className="bg-[#0F4493] w-20 h-0.5"></span>
-                </div>
-                <form className="flex flex-col justify-center gap-7 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5" onSubmit={handleSubmit}>
-                    <div className="flex flex-col gap-2">
-                        <Input variant='outline' placeholder='code de 6 chiffres' isInvalid={!isValid && isTouched} value={code} onChange={handleChange} />
-                    </div>
-                    <Button colorScheme='facebook' type="submit" isLoading={isLoading} isDisabled={!isValid}>Se Connecter</Button>
-                </form>
-            </div>
-        </div>
-    )
-}
-export default Verify
+
+            <Flex justify="flex-start" pl={1}>
+              <Checkbox
+                colorScheme="blue"
+                isChecked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                color="gray.400"
+                fontSize="sm"
+                fontWeight="semibold"
+              >
+                Se souvenir de moi
+              </Checkbox>
+            </Flex>
+
+            <Button
+              colorScheme="blue"
+              bg="blue.500"
+              color="white"
+              _hover={{ bg: 'blue.600', shadow: '0 0 15px rgba(66, 153, 225, 0.4)' }}
+              _active={{ bg: 'blue.700' }}
+              type="submit"
+              isLoading={isLoading}
+              isDisabled={!isValid}
+              size="lg"
+              borderRadius="xl"
+              h="12"
+              fontWeight="bold"
+              shadow="md"
+              transition="all 0.2s"
+            >
+              Se Connecter
+            </Button>
+          </Flex>
+        </form>
+
+        <Text color="gray.600" fontSize="xs" mt={8} fontWeight="semibold">
+          © {new Date().getFullYear()} Université Abdelmalek Essaâdi. Tous droits réservés.
+        </Text>
+      </Box>
+    </Flex>
+  );
+};
+
+export default Verify;

@@ -75,6 +75,8 @@ class DemandeController extends Controller
         }
 
         $demande = Demande::create(array_merge($request->all(), ['traitement' => 'en cours']));
+        $demande->load('user');
+        event(new \App\Events\NotificationEvent($demande));
         return response()->json($demande, 201);
     }
 
