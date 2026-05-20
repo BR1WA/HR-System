@@ -27,10 +27,9 @@ const handleChange = (e) => {
 const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true)
-    let response=null;
     if (isValid && isTouched && code) {
         try {
-            response = await axiosInstance.post('http://127.0.0.1:8000/api/verifiy-email', { email,otp: code });
+            const response = await axiosInstance.post('http://127.0.0.1:8000/api/verifiy-email', { email,otp: code });
             console.log('API Response:', response.data);
             if (response.data.success) {
                 if(rememberMe) setCookie('user_id', response.data.data.user.id,7);
@@ -39,17 +38,23 @@ const handleSubmit = async (e) => {
                 sessionStorage.setItem('token',response.data.data.token)
                 response.data.data.user.role==='admin' ? navigate('/options') : navigate('/userOptions')
             }
-        } catch (error) {
-            const errorMessage = error.response ? error.response.data : error.message;
-            console.error('API Error:', errorMessage);
-        }finally{
-            setIsLoading(false);
             toast({
                 description: response.data.message,
                 status: response.data.success ? 'success' : 'error',
                 duration: 9000,
                 isClosable: true,
             });
+        } catch (error) {
+            const errorMessage = error.response && error.response.data && error.response.data.message ? error.response.data.message : error.message;
+            console.error('API Error:', error);
+            toast({
+                description: typeof errorMessage === 'string' ? errorMessage : 'Code invalide.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            });
+        }finally{
+            setIsLoading(false);
         }
     }
 };

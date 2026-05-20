@@ -80,9 +80,9 @@ const Stepper = () => {
         }
         data.append("type", sessionStorage.getItem("type"));
       try {
-        
         if(sessionStorage.getItem("user")){
-            const response = await axiosInstance.put(`/users/${sessionStorage.getItem("user")}`, data);
+            data.append('_method', 'PUT');
+            const response = await axiosInstance.post(`/users/${sessionStorage.getItem("user")}`, data);
             console.log('Response:', response.data);
             navigate('/options');
         }else{

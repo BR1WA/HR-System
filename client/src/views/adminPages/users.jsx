@@ -364,7 +364,7 @@ const Users = () => {
                                                             <MenuItem onClick={()=>viewProfile(user[2])}>
                                                                 Voir Profile
                                                             </MenuItem>
-                                                            <MenuItem>
+                                                            <MenuItem onClick={()=>editUser(user[2])}>
                                                                 Modifier
                                                             </MenuItem>
                                                             <MenuItem onClick={()=>{onOpen();setUserId(user[2])}}>
