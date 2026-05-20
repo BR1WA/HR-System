@@ -13,8 +13,17 @@ HR-System is a Human Resources management system designed to streamline HR proce
 ### Login Screen
 ![Login Screen](login.png)
 
-### Admin Dashboard
+### Admin Dashboard (Options Panel)
 ![Admin Dashboard](dashboard.png)
+
+### Personnel Management
+![Personnel Management](users.png)
+
+### Requests Inbox (Demandes Dashboard)
+![Requests Inbox](demandes.png)
+
+### Statistics & Metrics Chart
+![Statistics & Metrics](statistics.png)
 
 ## Technologies Used
 

@@ -147,4 +147,17 @@ class DemandeController extends Controller
     }
 }
 
+    public function updateStatus(Request $request, $id)
+    {
+        $demande = Demande::findOrFail($id);
+        $request->validate([
+            'status' => 'required|in:en cours,valider,rejeter'
+        ]);
+        $demande->update(['traitement' => $request->status]);
+        return response()->json([
+            'message' => 'Statut mis à jour avec succès',
+            'demande' => $demande
+        ]);
+    }
+
 }

@@ -41,6 +41,7 @@ Route::get('/user', function (Request $request) {
     // demande 
     Route::post('/demandes', [DemandeController::class, 'store']);
     Route::get('/demandes/{id}', [DemandeController::class, 'getUserDemandes'])->name('user.demandes');
+    Route::put('/demandes/{id}/status', [DemandeController::class, 'updateStatus']);
 
 
 
