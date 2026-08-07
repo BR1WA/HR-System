@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Laravel
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          extensions: mbstring, sqlite, pdo_sqlite
+      - name: Validate Composer metadata
+        run: composer validate --strict --no-check-publish
+      - name: Install backend dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Audit backend dependencies
+        run: composer audit --locked
+      - name: Run Laravel tests
+        run: php artisan test
+      - name: Check backend formatting
+        run: vendor/bin/pint --test
+
+  frontend:
+    name: React
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Lint frontend
+        run: npm run lint
+      - name: Build frontend
+        run: npm run build
+      - name: Audit critical dependencies
+        run: npm audit --audit-level=critical

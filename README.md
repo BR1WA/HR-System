@@ -1,6 +1,7 @@
 # 🎓 Système de Gestion des Ressources Humaines (HR-System) - UAE
 
-[![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![CI](https://github.com/BR1WA/HR-System/actions/workflows/ci.yml/badge.svg)](https://github.com/BR1WA/HR-System/actions/workflows/ci.yml)
+[![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![React](https://img.shields.io/badge/React-18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev)
 [![Chakra UI](https://img.shields.io/badge/Chakra--UI-v2-319795?style=for-the-badge&logo=chakra-ui&logoColor=white)](https://chakra-ui.com)
 [![MySQL](https://img.shields.io/badge/MySQL-8-00758F?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
@@ -58,10 +59,20 @@ Un portail moderne de gestion des ressources humaines conçu spécifiquement pou
 
 ## 🛠️ Stack Technique
 
-* **Backend :** Laravel 11.x, Eloquent ORM, TCPDF (Génération de documents)
+* **Backend :** Laravel 12.x, Eloquent ORM, TCPDF (Génération de documents)
 * **Frontend :** React 18, Vite, Chakra UI, Tailwind CSS, Redux Toolkit
 * **Base de données :** MySQL
-* **Tests & Automatisation :** Playwright (Vérification E2E & captures automatisées)
+* **Qualité & Automatisation :** PHPUnit, Laravel Pint, ESLint et GitHub Actions
+
+### Architecture
+
+```text
+HR-System/
+├── client/   # SPA React, Vite, Chakra UI et Redux Toolkit
+└── server/   # API Laravel, Sanctum, rôles, migrations et génération PDF
+```
+
+Les routes contenant les données RH sont protégées par Laravel Sanctum. Les opérations de gestion globale sont réservées au rôle `admin`, tandis qu'un employé ne peut consulter que son propre profil et ses propres demandes.
 
 ---
 
@@ -69,7 +80,8 @@ Un portail moderne de gestion des ressources humaines conçu spécifiquement pou
 
 ### 1. Prérequis
 - PHP >= 8.2
-- Node.js >= 18
+- Composer 2
+- Node.js >= 20.19
 - MySQL / XAMPP
 
 ### 2. Cloner le projet
@@ -89,13 +101,36 @@ php artisan migrate --seed
 php artisan serve
 ```
 
+Par défaut, les OTP sont écrits dans `storage/logs/laravel.log`. Configurez les variables `MAIL_*` dans `server/.env` pour les envoyer par SMTP.
+
 ### 4. Configurer le Frontend (Vite + React)
 ```bash
 cd ../client
-npm install
+cp .env.example .env
+npm ci
 npm run dev
 ```
 Accédez ensuite à l'application sur [http://localhost:5173](http://localhost:5173).
+
+---
+
+## ✅ Vérification
+
+```bash
+# Backend
+cd server
+php artisan test
+vendor/bin/pint --test
+composer audit --locked
+
+# Frontend
+cd ../client
+npm run lint
+npm run build
+npm audit --audit-level=critical
+```
+
+La même vérification est exécutée automatiquement par GitHub Actions à chaque push et pull request.
 
 ---
 
