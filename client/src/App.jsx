@@ -1,11 +1,22 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { Attestations , Login, Verify,UserOptions} from './views';
-import { AddUser, Options, Statistics, Stepper, Users, User, Demandes } from './views/adminPages';
 import { PrivateRoutes } from './PrivateRoutes';
+
+const Login = lazy(() => import('./views/login'));
+const Verify = lazy(() => import('./views/verify'));
+const UserOptions = lazy(() => import('./views/userOptions'));
+const Attestations = lazy(() => import('./views/attestations'));
+const AddUser = lazy(() => import('./views/adminPages/addUser'));
+const Options = lazy(() => import('./views/adminPages/options'));
+const Statistics = lazy(() => import('./views/adminPages/statistics'));
+const Stepper = lazy(() => import('./views/adminPages/stepper'));
+const Users = lazy(() => import('./views/adminPages/users'));
+const User = lazy(() => import('./views/adminPages/User'));
+const Demandes = lazy(() => import('./views/adminPages/demandes'));
 
 function App(){
   return(
-  <>
+  <Suspense fallback={<div role="status" className="min-h-screen grid place-items-center">Chargement…</div>}>
     <Routes>
       <Route path='/*' element={<Login/>}></Route>
       <Route path='/login' element={<Login/>}></Route>
@@ -21,7 +32,7 @@ function App(){
       <Route path='/userOptions' element={<PrivateRoutes role="employee"><UserOptions/></PrivateRoutes>}></Route>
       <Route path='/attestations' element={<PrivateRoutes role="employee"><Attestations/></PrivateRoutes>}></Route>
     </Routes>
-  </>
+  </Suspense>
   )
 }
 
