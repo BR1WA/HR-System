@@ -1,5 +1,4 @@
-import { Heading,Box,Image,Input,Button,useToast} from "@chakra-ui/react"
-import React, { useRef } from 'react'
+import { Heading,Box,Image,Button} from "@chakra-ui/react"
 
 const Step1 = ({setStep,formData,handleChange,logOut}) => {
 

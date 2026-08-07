@@ -1,12 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Box, Flex, Icon, Link, Text, Divider, Button, Avatar, IconButton, Drawer, DrawerContent, DrawerOverlay, useDisclosure, Image, useToast } from '@chakra-ui/react';
-import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { FiHome, FiUsers, FiFileText, FiBarChart2, FiLogOut, FiMenu, FiPlusCircle } from 'react-icons/fi';
 import { axiosInstance } from '../axios';
 
-const SidebarContent = ({ onClose, ...rest }) => {
+const SidebarContent = ({ ...rest }) => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const navItems = [
     { name: 'Tableau de bord', icon: FiHome, path: '/options' },

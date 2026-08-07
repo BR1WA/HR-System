@@ -1,4 +1,4 @@
-import { Heading,Box,Image,Input,Button,Select} from "@chakra-ui/react"
+import { Heading,Box,Image,Button,Select} from "@chakra-ui/react"
 import TypesMouvement from "./staticData/types_mouvement"
 
 const Step6 = ({setStep,formData,handleChange,handleSubmit,logOut}) => {

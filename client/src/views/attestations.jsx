@@ -1,4 +1,4 @@
-import { Heading,Box,Image,Text, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, Input, ModalFooter, Select, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, useToast, Menu, MenuButton, MenuList, MenuItem, IconButton} from "@chakra-ui/react"
+import { Heading,Box,Image,Text, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, Input, ModalFooter, useToast, Menu, MenuButton, MenuList, MenuItem, IconButton} from "@chakra-ui/react"
 import { useCallback, useEffect, useRef, useState } from "react";
 import { axiosInstance } from "../axios";
 import { IoMdNotificationsOutline } from "react-icons/io";
@@ -9,11 +9,10 @@ const Attestations = () => {
     const initialRef = useRef(null);
     const [formData, setFormData] = useState({});
     const [certificate, setCertificate] = useState({});
-    const currentYear = new Date().getFullYear();
     const toast = useToast();
     const [notifications, setNotifications] = useState({});
     const [showMore, setShowMore] = useState(false);
-    const [type, setType] = useState(sessionStorage.getItem('type'));
+    const userType = sessionStorage.getItem('type');
 
     const demands = [
         { id: 1, title: 'Demande de congé annuel', description: 'Une demande présentée par l\'employé pour obtenir un congé annuel du travail.', value: 'demande_vacance_annuelle' },
@@ -76,7 +75,7 @@ const Attestations = () => {
             onClose();
             setFormData({});
         }
-    }, [certificate, formData, onClose]);
+    }, [certificate, formData, onClose, toast]);
     
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -99,11 +98,11 @@ const Attestations = () => {
                 isClosable: true,
             });
         }
-    }, []);
+    }, [toast]);
 
     useEffect(() => {
         getUserDemandes();
-    }, []);
+    }, [getUserDemandes]);
 
     const logOut = () => {
         sessionStorage.clear();
@@ -175,7 +174,7 @@ const Attestations = () => {
                 </div>
                 <div className="flex flex-col justify-center gap-5 sm:grid md:grid-cols-3 sm:grid-cols-2 ">
                         {demands.map((demand, index) => (
-                            (type === 'enseignant' && index === 0) ? null : (
+                            (userType === 'enseignant' && index === 0) ? null : (
                                 <div key={index} className="bg-slate-200 p-3 rounded-md flex flex-col gap-2">
                                     <Heading size="md" fontWeight="bold">{demand.title}</Heading>
                                     <Text>{demand.description}</Text>

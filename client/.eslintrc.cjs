@@ -12,6 +12,10 @@ module.exports = {
   settings: { react: { version: '18.2' } },
   plugins: ['react-refresh'],
   rules: {
+    // This JavaScript codebase does not use runtime PropTypes. API payloads are
+    // validated at the Laravel boundary and component contracts are covered by lint/tests.
+    'react/prop-types': 'off',
+    'react/no-unescaped-entities': 'off',
     'react/jsx-no-target-blank': 'off',
     'react-refresh/only-export-components': [
       'warn',

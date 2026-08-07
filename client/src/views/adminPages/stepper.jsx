@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Step1 from './step1';
 import Step2 from './step2';
 import Step3 from './step3';
@@ -12,7 +12,6 @@ import { Spinner } from '@chakra-ui/react';
 const Stepper = () => {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
-    type : '',
     ppr: '',
     nom: '',
     prenom: '',

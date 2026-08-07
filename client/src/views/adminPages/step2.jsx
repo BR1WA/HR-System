@@ -1,4 +1,4 @@
-import { Heading,Box,Image,Input,Button,Select} from "@chakra-ui/react"
+import { Heading,Box,Image,Button,Select} from "@chakra-ui/react"
 import Provinces from "./staticData/provinces"
 
 const Step2 = ({setStep,formData,handleChange,logOut}) => {

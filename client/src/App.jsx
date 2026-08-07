@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Attestations , Login, Verify,UserOptions} from './views';
 import { AddUser, Options, Statistics, Stepper, Users, User, Demandes } from './views/adminPages';
 import { PrivateRoutes } from './PrivateRoutes';

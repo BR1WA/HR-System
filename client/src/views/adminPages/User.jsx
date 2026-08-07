@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { axiosInstance } from '../../axios';
 import { Heading,Box,Image, Spinner, Menu, MenuButton, MenuList, MenuItem, IconButton, Button} from "@chakra-ui/react"
 import {useRef} from "react";

@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { Heading, Box, Tabs, TabList, Tab, TabPanels, TabPanel, Table, Tbody, Tr, Td, Th, Thead, Avatar, Menu, MenuButton, MenuList, MenuItem, IconButton, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, FormControl, FormLabel, Input, ModalFooter, Button, useToast, Flex, Text, Badge, SimpleGrid, Stat, StatLabel, StatNumber, Icon } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../axios';
-import { FiMenu, FiChevronDown, FiUserCheck, FiUsers, FiLock, FiEdit2, FiTrash2, FiSearch, FiSliders } from 'react-icons/fi';
+import { FiMenu, FiUserCheck, FiUsers, FiLock, FiEdit2, FiTrash2, FiSearch, FiSliders } from 'react-icons/fi';
 import Sidebar from '../../components/Sidebar';
 
 const Users = () => {
@@ -128,7 +128,7 @@ const Users = () => {
           </Thead>
           <Tbody>
             {filtered.map((user, index) => {
-              const [nom, type, id, avatar, prenom, isArchived, archiveRaison, email] = user;
+              const [nom, , id, avatar, prenom, isArchived, archiveRaison, email] = user;
               return (
                 <Tr key={id || index} _hover={{ bg: 'gray.50/50' }}>
                   <Td>

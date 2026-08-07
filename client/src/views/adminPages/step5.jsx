@@ -1,5 +1,4 @@
-import { Heading,Box,Image,Input,Button,Select} from "@chakra-ui/react"
-import React, { useRef } from 'react'
+import { Heading,Box,Image,Button,Select} from "@chakra-ui/react"
 import Departements from "./staticData/departements"
 import Diplomes from "./staticData/diplomes"
 import Specialite from "./staticData/specialite"
