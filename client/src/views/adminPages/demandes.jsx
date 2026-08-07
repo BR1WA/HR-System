@@ -9,7 +9,7 @@ const Demandes = () => {
   const toast = useToast();
 
   const demandsMap = [
-    { value: 'demande__vacance_annuelle', title: 'Congé Annuel' },
+    { value: 'demande_vacance_annuelle', title: 'Congé Annuel' },
     { value: 'demande_quitter_territoire_national', title: 'Quitter le Territoire' },
     { value: 'demande_attestation_salaire', title: 'Attestation Salaire' },
     { value: 'demande_attestation_travail', title: 'Attestation de Travail' },

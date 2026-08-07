@@ -8,7 +8,6 @@ use App\Models\User;
 use App\Notifications\OtpNotification;
 use Illuminate\Http\Request;
 use Ichtrojan\Otp\Otp;
-use Laravel\Sanctum\HasApiTokens;
 
 class AuthController extends Controller
 {
@@ -19,10 +18,12 @@ class AuthController extends Controller
         $this->otp = new Otp;
     }
 
-    function login(LoginRequest $request){
-        $email = $request->validated();
-        $user= User::where('email',$email)->first();
+    public function login(LoginRequest $request)
+    {
+        $email = $request->validated('email');
+        $user = User::where('email', $email)->firstOrFail();
         $user->notify(new OtpNotification());
+
         return response()->json([
                 "success" => true,
                 "message" =>("otp message sent successfully"),
@@ -33,20 +34,21 @@ class AuthController extends Controller
     }
 
     
-    function verifyEmail(VerifyEmailRequest $request){
+    public function verifyEmail(VerifyEmailRequest $request)
+    {
         $otpObj= $this->otp->validate($request->email, $request->otp);
         if(!$otpObj->status){
             return response()->json([
                 "success" => false,
-                "message" => "invalide credentials",
+                "message" => "Code de vérification invalide",
                 "data" => null,
-            ], 200);
+            ], 422);
         }
         $user = User::where('email', $request->email)->first();
         $user->email_verified_at= now();
         $user->save();
         $token = $user->createToken('auth_token')->plainTextToken;
-        $user->role=$user->getRoleNames()[0];
+        $user->role = $user->getRoleNames()->first();
         return response()->json([
             "success" => true,
             "message" =>"Email vérifié avec succès",
@@ -58,7 +60,8 @@ class AuthController extends Controller
     }
 
     
-    function logout(Request $request){
+    public function logout(Request $request)
+    {
         $user = $request->user();
         $user->currentAccessToken()->delete();
         return response()->json([

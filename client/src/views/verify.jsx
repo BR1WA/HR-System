@@ -1,17 +1,14 @@
-import React, { useState } from 'react';
-import { Heading, Box, Image, Input, Button, useToast, Flex, Text, Checkbox } from '@chakra-ui/react';
+import { useState } from 'react';
+import { Heading, Box, Image, Input, Button, useToast, Flex, Text } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
 import { axiosInstance } from '../axios';
 
 const Verify = () => {
   const [code, setCode] = useState('');
-  const [rememberMe, setRememberMe] = useState(true);
   const [isValid, setIsValid] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [cookies, setCookie] = useCookies(['user']);
   const toast = useToast();
   const email = useSelector((state) => state.user.email);
   const navigate = useNavigate();
@@ -28,10 +25,8 @@ const Verify = () => {
     setIsLoading(true);
     if (isValid && isTouched && code) {
       try {
-        const response = await axiosInstance.post('http://127.0.0.1:8000/api/verifiy-email', { email, otp: code });
-        console.log('API Response:', response.data);
+        const response = await axiosInstance.post('/verify-email', { email, otp: code });
         if (response.data.success) {
-          if (rememberMe) setCookie('user_id', response.data.data.user.id, 7);
           sessionStorage.setItem('id', response.data.data.user.id);
           sessionStorage.setItem('type', response.data.data.user.type);
           sessionStorage.setItem('token', response.data.data.token);
@@ -185,19 +180,6 @@ const Verify = () => {
                 </Text>
               )}
             </Box>
-
-            <Flex justify="flex-start" pl={1}>
-              <Checkbox
-                colorScheme="blue"
-                isChecked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                color="gray.400"
-                fontSize="sm"
-                fontWeight="semibold"
-              >
-                Se souvenir de moi
-              </Checkbox>
-            </Flex>
 
             <Button
               colorScheme="blue"

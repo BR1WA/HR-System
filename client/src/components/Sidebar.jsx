@@ -150,7 +150,7 @@ export default function Sidebar({ children }) {
           if (latest) {
             const employeeName = latest.user ? `${latest.user.prenom} ${latest.user.nom}` : 'Un employé';
             const labelMap = {
-              'demande__vacance_annuelle': 'Congé annuel',
+              'demande_vacance_annuelle': 'Congé annuel',
               'demande_quitter_territoire_national': 'Quitter le territoire',
               'demande_attestation_salaire': 'Attestation de salaire',
               'demande_attestation_travail': 'Attestation de travail',

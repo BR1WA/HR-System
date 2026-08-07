@@ -16,7 +16,7 @@ const Attestations = () => {
     const [type, setType] = useState(sessionStorage.getItem('type'));
 
     const demands = [
-        { id: 1, title: 'Demande de congé annuel', description: 'Une demande présentée par l\'employé pour obtenir un congé annuel du travail.', value: 'demande__vacance_annuelle' },
+        { id: 1, title: 'Demande de congé annuel', description: 'Une demande présentée par l\'employé pour obtenir un congé annuel du travail.', value: 'demande_vacance_annuelle' },
         { id: 2, title: 'Demande de permis de quitter le territoire national', description: 'Une demande présentée par l\'employé pour obtenir un permis de quitter le territoire national pour une période déterminée.', value: 'demande_quitter_territoire_national' },
         { id: 3, title: 'Demande de attestation de salaire', description: 'Ce formulaire est utilisé pour demander un certificat prouvant le salaire perçu par l\'employé.', value: 'demande_attestation_salaire' },
         { id: 4, title: 'Demande de attestation de travail', description: 'Ce formulaire est utilisé pour demander un certificat prouvant l\'emploi actuel de l\'employé.', value: 'demande_attestation_travail' },
@@ -58,7 +58,7 @@ const Attestations = () => {
                 id: response.data.id,
                 user_id: sessionStorage.getItem("id"),
                 type: certificate.value,
-                traitement: 'en cour',
+                traitement: 'en cours',
                 ...formData,
             };
 

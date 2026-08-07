@@ -39,7 +39,7 @@ const Options = () => {
   const pendingDemandes = demandes.filter(d => d.traitement === 'en cours').length;
 
   const demandsMap = [
-    { value: 'demande__vacance_annuelle', title: 'Congé Annuel' },
+    { value: 'demande_vacance_annuelle', title: 'Congé Annuel' },
     { value: 'demande_quitter_territoire_national', title: 'Quitter le Territoire' },
     { value: 'demande_attestation_salaire', title: 'Attestation Salaire' },
     { value: 'demande_attestation_travail', title: 'Attestation de travail' },

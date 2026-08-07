@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Heading, Box, Image, Input, Button, useToast, Flex, Text } from '@chakra-ui/react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addEmail } from '../features/user/userSlice';
+import { axiosInstance } from '../axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -17,7 +17,7 @@ const Login = () => {
   const handleChange = (e) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
-    setIsValid(/^[A-Z0-9.]+@gmail\.com$/i.test(newEmail));
+    setIsValid(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail));
     setIsTouched(true);
   };
 
@@ -26,8 +26,7 @@ const Login = () => {
     setIsLoading(true);
     if (isValid && isTouched && email) {
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/login', { email });
-        console.log('API Response:', response.data);
+        await axiosInstance.post('/login', { email });
         toast({
           title: 'OTP Envoyé',
           description: 'Un code de vérification a été envoyé à votre email.',
@@ -39,8 +38,7 @@ const Login = () => {
         dispatch(addEmail(email));
         navigate('/verify');
       } catch (error) {
-        const errorMessage = error.response ? error.response.data : error.message;
-        console.error('API Error:', errorMessage);
+        console.error('API Error:', error);
         toast({
           title: 'Erreur de connexion',
           description: 'Adresse email introuvable ou incorrecte.',
@@ -160,7 +158,7 @@ const Login = () => {
               />
               {!isValid && isTouched && (
                 <Text color="red.300" fontSize="xs" mt={1.5} pl={1} fontWeight="semibold">
-                  Veuillez entrer une adresse gmail valide.
+                  Veuillez entrer une adresse email valide.
                 </Text>
               )}
             </Box>

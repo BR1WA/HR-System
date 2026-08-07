@@ -1,8 +1,11 @@
 import axios from "axios";
+
+const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
+
 export const axiosInstance = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api',
+    baseURL: apiBaseUrl,
     timeout: 5000,
-  });
+});
 
 axiosInstance.interceptors.request.use(
   function(config){
@@ -11,5 +14,6 @@ axiosInstance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config
-  }
+  },
+  (error) => Promise.reject(error),
 )
