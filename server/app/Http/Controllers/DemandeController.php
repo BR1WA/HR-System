@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Demande;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class DemandeController extends Controller
 {
@@ -17,12 +18,10 @@ class DemandeController extends Controller
         return response()->json($demandes);
     }
 
-    public function getUserDemandes($id)
+    public function getUserDemandes(Request $request, User $user)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
-        }
+        abort_unless($request->user()->is($user) || $request->user()->hasRole('admin'), 403);
+
         $demandes = Demande::where('user_id', $user->id)->get();
         return response()->json($demandes);
     }
@@ -31,8 +30,19 @@ class DemandeController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'type' => 'required|string',
-            'user_id' => 'required|exists:users,id',
+            'type' => ['required', Rule::in([
+                'demande_quitter_territoire_national',
+                'demande_attestation_salaire',
+                'demande_vacance_annuelle',
+                'damande_absence',
+                'demande_licence_exceptionnelle',
+                'demande_attestation_travail',
+                'demande_attestation_travail_ar',
+            ])],
+            'date_debut' => ['nullable', 'date'],
+            'date_fin' => ['nullable', 'date', 'after_or_equal:date_debut'],
+            'raison' => ['nullable', 'string', 'max:1000'],
+            'destination_torab_lwatani' => ['nullable', 'string', 'max:255'],
         ]);
 
         switch ($request->input('type')) {
@@ -74,16 +84,18 @@ class DemandeController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $demande = Demande::create(array_merge($request->all(), ['traitement' => 'en cours']));
+        $demande = Demande::create(array_merge($validator->validated(), [
+            'user_id' => $request->user()->id,
+            'traitement' => 'en cours',
+        ]));
         $demande->load('user');
         event(new \App\Events\NotificationEvent($demande));
         return response()->json($demande, 201);
     }
 
     // Générer un PDF selon le type de demande
-    public function generatePDF($id)
+    public function generatePDF(Demande $demande)
 {
-    $demande = Demande::findOrFail($id);
     $user = $demande->user;
 
     $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
@@ -113,6 +125,7 @@ class DemandeController extends Controller
             case 'demande_attestation_salaire':
                 $content = view('attestations.demande_attestation_salaire', $viewData)->render();
                 break;
+            case 'demande_vacance_annuelle':
             case 'demande__vacance_annuelle':
                 $content = view('attestations.demande_vacance_annuelle', $viewData)->render();
                 break;
@@ -149,9 +162,8 @@ class DemandeController extends Controller
     }
 }
 
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, Demande $demande)
     {
-        $demande = Demande::findOrFail($id);
         $request->validate([
             'status' => 'required|in:en cours,valider,rejeter'
         ]);

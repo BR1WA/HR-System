@@ -9,14 +9,15 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-    public function setAvatar(Request $request, string $id){
-        $employee=User::find($id);
+    public function setAvatar(Request $request, User $user){
+        $this->authorizeSelfOrAdmin($request, $user);
+        $employee = $user;
         try{
             if($employee){
                 $request->validate([
                     'avatar' => ['required', 'file', 'mimes:jpg', 'max:2048']
                 ]);
-                $request->file('avatar')->storeAs('public/Avatars', $id.'.jpg');
+                $request->file('avatar')->storeAs('public/Avatars', $user->id.'.jpg');
                 $avatar=asset("storage/Avatars/{$employee->id}.jpg");
                 return response()->json(['message' => 'The avatar was set successfully', 'avatar' =>$avatar]);
             }else{
@@ -29,10 +30,12 @@ class UserController extends Controller
 
 
     
-    public function deleteAvatar($id)
+    public function deleteAvatar(Request $request, User $user)
     {
+        $this->authorizeSelfOrAdmin($request, $user);
+
         try {
-            $avatarPath = "public/Avatars/{$id}.jpg";
+            $avatarPath = "public/Avatars/{$user->id}.jpg";
             
             if (Storage::exists($avatarPath)) {
                 Storage::delete($avatarPath);
@@ -127,17 +130,18 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Request $request, User $user)
     {
+        $this->authorizeSelfOrAdmin($request, $user);
+
         try {
-            $user = User::findOrFail($id);
-        $avatar = "public/Avatars/$id.jpg";
+        $avatar = "public/Avatars/{$user->id}.jpg";
         if (Storage::exists($avatar)) {
             $user->avatar = asset("storage/Avatars/$id.jpg");
         } else {
             $user->avatar = null; 
         }
-        $arrete = "public/Arrete/$id.jpg";
+        $arrete = "public/Arrete/{$user->id}.jpg";
         if (Storage::exists($arrete)) {
             $user->arrete = asset("storage/Arrete/$id.jpg");
         } else {
@@ -215,5 +219,13 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
         return response()->json(null, 204);
+    }
+
+    private function authorizeSelfOrAdmin(Request $request, User $user): void
+    {
+        abort_unless(
+            $request->user()->is($user) || $request->user()->hasRole('admin'),
+            403
+        );
     }
 }

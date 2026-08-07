@@ -1,55 +1,51 @@
 <?php
 
 use Illuminate\Http\Request;
-use App\Events\NotificationEvent;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Broadcast;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\DemandeController;
 
-Route::get('/user', function (Request $request) {
-     $user=$request->user();
-     $user->role=$user->getRoleNames()[0];
-     unset($user->roles);
-     return $user;
-})->middleware('auth:sanctum');
-
-  Route::middleware('auth:sanctum')->group(function () {
-  Route::get('/test', function(){return "hello admin";})->middleware("permission:test");
-  Route::get('/test2', function(){return "hello employee";})->middleware("permission:test2");
-  Route::apiResource('/users', UserController::class);
-  Route::post('/avatar/{id}', [UserController::class, 'setAvatar']);
-  Route::delete('/avatar/{id}', [UserController::class, 'deleteAvatar']);
-  Route::post('/archive/{user}', [ArchiveController::class, 'archiveUser']);
-  Route::get('/archives', [ArchiveController::class, 'getArchives']);
-
-});
-  
+Route::middleware('throttle:6,1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/verifiy-email', [AuthController::class, 'verifyEmail']);
-    Route::get('/generate-pdf/{id}', [CertificateController::class, 'generatePDF']);
+    Route::post('/verify-email', [AuthController::class, 'verifyEmail']);
+});
 
-    Route::get('/user/{id}/certificate', [CertificateController::class, 'printCertificate']);
-    Route::get('/user/{id}/travail', [CertificateController::class, 'showAttestationTarifaire']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        $user = $request->user();
+        $user->role = $user->getRoleNames()->first();
 
+        return $user;
+    });
+    Route::post('/logout', [AuthController::class, 'logout']);
 
+    Route::get('/users/{user}', [UserController::class, 'show']);
+    Route::post('/avatar/{user}', [UserController::class, 'setAvatar']);
+    Route::delete('/avatar/{user}', [UserController::class, 'deleteAvatar']);
 
-    
-    // demande 
     Route::post('/demandes', [DemandeController::class, 'store']);
-    Route::get('/demandes/{id}', [DemandeController::class, 'getUserDemandes'])->name('user.demandes');
-    Route::put('/demandes/{id}/status', [DemandeController::class, 'updateStatus']);
+    Route::get('/demandes/{user}', [DemandeController::class, 'getUserDemandes'])
+        ->name('user.demandes');
 
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/users', [UserController::class, 'index']);
+        Route::post('/users', [UserController::class, 'store']);
+        Route::match(['put', 'patch', 'post'], '/users/{user}', [UserController::class, 'update']);
+        Route::delete('/users/{user}', [UserController::class, 'destroy']);
 
+        Route::get('/demandes', [DemandeController::class, 'index'])->name('demandes.index');
+        Route::put('/demandes/{demande}/status', [DemandeController::class, 'updateStatus']);
+        Route::get('/demandes/{demande}/generatePDF', [DemandeController::class, 'generatePDF'])
+            ->name('demandes.generatePDF');
 
-    Route::post('/archive/{user}', [ArchiveController::class, 'archiveUser']);
-    Route::get('/archives', [ArchiveController::class, 'getArchives']);
+        Route::post('/archive/{user}', [ArchiveController::class, 'archiveUser']);
+        Route::get('/archives', [ArchiveController::class, 'getArchives']);
 
-    // routes/web.php
-
-Route::get('demandes', [DemandeController::class, 'index'])->name('demandes.index');
-Route::post('demandes', [DemandeController::class, 'store'])->name('demandes.store');
-Route::get('demandes/{id}/generatePDF', [DemandeController::class, 'generatePDF'])->name('demandes.generatePDF');
+        Route::get('/generate-pdf/{user}', [CertificateController::class, 'generatePDF']);
+        Route::get('/user/{user}/certificate', [CertificateController::class, 'printCertificate']);
+        Route::get('/user/{user}/travail', [CertificateController::class, 'showAttestationTarifaire']);
+    });
+});
