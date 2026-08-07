@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UserSeeder extends Seeder
 {
@@ -14,11 +13,11 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $admin = User::create([
-            "nom" => "admin",
-            "email" => "simomi2015@gmail.com"
+            'nom' => 'admin',
+            'email' => 'simomi2015@gmail.com',
         ]);
-        $admin->assignRole("admin");
-        
+        $admin->assignRole('admin');
+
         $employee = User::create([
             'ppr' => 'PPR003',
             'nom' => 'Ahmed',
@@ -57,8 +56,8 @@ class UserSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-        $employee->assignRole("employee");
-        
+        $employee->assignRole('employee');
+
         $employee2 = User::create([
             'ppr' => '54321',
             'nom' => 'Smith',
@@ -96,48 +95,46 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
             'is_archived' => false,
         ]);
-        $employee2->assignRole("employee");
-        
+        $employee2->assignRole('employee');
 
         $employee3 = User::create([
-                'ppr' => '98765',
-                'nom' => 'Johnson',
-                'prenom' => 'Eva',
-                'nom_ar' => 'جونسون',
-                'prenom_ar' => 'إيفا',
-                'cin' => 'CD543210',
-                'genre' => 'Male',
-                'lieu_naissance' => 'City Z',
-                'adresse' => '789 Oak St',
-                'telephone' => '+1 555-789-0123',
-                'situation_familiale' => 'Married',
-                'nationalite' => 'CA',
-                'grade' => 'Manager',
-                'type_personnel' => 'Permanent',
-                'departement' => 'HR',
-                'diplome' => 'Master of Human Resources',
-                'specialite' => 'Organizational Development',
-                'etabl_diplome' => 'University W',
-                'situation_administrative' => 'Active',
-                'fonction_exercee' => 'HR Manager',
-                'service_affectation' => 'Human Resources Team',
-                'type_mouvement' => 'Promotion',
-                'organisme_accueil' => 'Company B',
-                'date_mouvement' => '2024-05-26',
-                'date_expiration_mouvement' => '2025-05-26',
-                'date_naissance' => '1980-08-20',
-                'date_debut_fonction' => '2020-03-15',
-                'date_recrutement' => '2020-03-15',
-                'echelle' => 6,
-                'echelon' => 4,
-                'indice' => 950,
-                'email' => 'eva.johnson@example.com',
-                'type' => 'fonctionnaire',
-                'email_verified_at' => now(),
-                'is_archived' => false,
-            ]);
-        $employee3->assignRole("employee");
-
+            'ppr' => '98765',
+            'nom' => 'Johnson',
+            'prenom' => 'Eva',
+            'nom_ar' => 'جونسون',
+            'prenom_ar' => 'إيفا',
+            'cin' => 'CD543210',
+            'genre' => 'Male',
+            'lieu_naissance' => 'City Z',
+            'adresse' => '789 Oak St',
+            'telephone' => '+1 555-789-0123',
+            'situation_familiale' => 'Married',
+            'nationalite' => 'CA',
+            'grade' => 'Manager',
+            'type_personnel' => 'Permanent',
+            'departement' => 'HR',
+            'diplome' => 'Master of Human Resources',
+            'specialite' => 'Organizational Development',
+            'etabl_diplome' => 'University W',
+            'situation_administrative' => 'Active',
+            'fonction_exercee' => 'HR Manager',
+            'service_affectation' => 'Human Resources Team',
+            'type_mouvement' => 'Promotion',
+            'organisme_accueil' => 'Company B',
+            'date_mouvement' => '2024-05-26',
+            'date_expiration_mouvement' => '2025-05-26',
+            'date_naissance' => '1980-08-20',
+            'date_debut_fonction' => '2020-03-15',
+            'date_recrutement' => '2020-03-15',
+            'echelle' => 6,
+            'echelon' => 4,
+            'indice' => 950,
+            'email' => 'eva.johnson@example.com',
+            'type' => 'fonctionnaire',
+            'email_verified_at' => now(),
+            'is_archived' => false,
+        ]);
+        $employee3->assignRole('employee');
 
     }
 }

@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Spatie\Permission\Models\Role;
 
 class RolesSeeder extends Seeder
 {
@@ -14,16 +13,16 @@ class RolesSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminRole = Role::create(['name' => 'admin','guard_name' => 'web']);
+        $adminRole = Role::create(['name' => 'admin', 'guard_name' => 'web']);
         $adminPermissions = Permission::whereIn('name', [
-            'test'
-                ])->get();
+            'test',
+        ])->get();
         $adminRole->givePermissionTo($adminPermissions);
 
-        $employeeRole = Role::create(['name' => 'employee','guard_name' => 'web']);
+        $employeeRole = Role::create(['name' => 'employee', 'guard_name' => 'web']);
         $employeePermissions = Permission::whereIn('name', [
-            'test2'
-                ])->get();
+            'test2',
+        ])->get();
         $employeeRole->givePermissionTo($employeePermissions);
     }
 }

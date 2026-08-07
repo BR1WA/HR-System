@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('archives', function (Blueprint $table) {
-            $table->id(); 
-            $table->unsignedBigInteger('user_id'); 
-            $table->date('date')->nullable(); 
-            $table->string('raison')->nullable(); 
-            $table->timestamps(); 
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->date('date')->nullable();
+            $table->string('raison')->nullable();
+            $table->timestamps();
             // Définir la clé étrangère
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

@@ -9,36 +9,37 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-    public function setAvatar(Request $request, User $user){
+    public function setAvatar(Request $request, User $user)
+    {
         $this->authorizeSelfOrAdmin($request, $user);
         $employee = $user;
-        try{
-            if($employee){
+        try {
+            if ($employee) {
                 $request->validate([
-                    'avatar' => ['required', 'file', 'mimes:jpg', 'max:2048']
+                    'avatar' => ['required', 'file', 'mimes:jpg', 'max:2048'],
                 ]);
                 $request->file('avatar')->storeAs('public/Avatars', $user->id.'.jpg');
-                $avatar=asset("storage/Avatars/{$employee->id}.jpg");
-                return response()->json(['message' => 'The avatar was set successfully', 'avatar' =>$avatar]);
-            }else{
+                $avatar = asset("storage/Avatars/{$employee->id}.jpg");
+
+                return response()->json(['message' => 'The avatar was set successfully', 'avatar' => $avatar]);
+            } else {
                 return response()->json('The employee was not found');
             }
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             return response()->json($e);
         }
     }
 
-
-    
     public function deleteAvatar(Request $request, User $user)
     {
         $this->authorizeSelfOrAdmin($request, $user);
 
         try {
             $avatarPath = "public/Avatars/{$user->id}.jpg";
-            
+
             if (Storage::exists($avatarPath)) {
                 Storage::delete($avatarPath);
+
                 return response()->json(['message' => 'Avatar deleted successfully']);
             } else {
                 return response()->json(['message' => 'Avatar not found'], 404);
@@ -47,13 +48,14 @@ class UserController extends Controller
             return response()->json(['message' => 'Error deleting avatar', 'error' => $e->getMessage()], 500);
         }
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         // Récupérer tous les utilisateurs
-        $users = User::with('archive')->get(); 
+        $users = User::with('archive')->get();
         foreach ($users as $user) {
             $avatarPath = "public/Avatars/{$user->id}.jpg";
             if (Storage::exists($avatarPath)) {
@@ -118,12 +120,13 @@ class UserController extends Controller
         $user = User::create($validatedData);
         if ($request->hasFile('arrete')) {
             $request->validate([
-                'arrete' => ['file', 'mimes:jpg,jpeg,png', 'max:2048']
+                'arrete' => ['file', 'mimes:jpg,jpeg,png', 'max:2048'],
             ]);
             $request->file('arrete')->storeAs('public/Arrete', $user->id.'.jpg');
             $user->arreter = asset("storage/Arrete/{$user->id}.jpg");
             $user->save();
         }
+
         return response()->json($user, 201);
     }
 
@@ -135,19 +138,20 @@ class UserController extends Controller
         $this->authorizeSelfOrAdmin($request, $user);
 
         try {
-        $avatar = "public/Avatars/{$user->id}.jpg";
-        if (Storage::exists($avatar)) {
-            $user->avatar = asset("storage/Avatars/$id.jpg");
-        } else {
-            $user->avatar = null; 
-        }
-        $arrete = "public/Arrete/{$user->id}.jpg";
-        if (Storage::exists($arrete)) {
-            $user->arrete = asset("storage/Arrete/$id.jpg");
-        } else {
-            $user->arrete = null; 
-        }
-        return response()->json($user);
+            $avatar = "public/Avatars/{$user->id}.jpg";
+            if (Storage::exists($avatar)) {
+                $user->avatar = asset("storage/Avatars/$id.jpg");
+            } else {
+                $user->avatar = null;
+            }
+            $arrete = "public/Arrete/{$user->id}.jpg";
+            if (Storage::exists($arrete)) {
+                $user->arrete = asset("storage/Arrete/$id.jpg");
+            } else {
+                $user->arrete = null;
+            }
+
+            return response()->json($user);
         } catch (Exception $e) {
             return response()->json($e);
 
@@ -192,7 +196,7 @@ class UserController extends Controller
             'echelle' => 'nullable|string',
             'echelon' => 'nullable|string',
             'indice' => 'nullable|string',
-            'email' => 'nullable|email|unique:users,email,' . $id,
+            'email' => 'nullable|email|unique:users,email,'.$id,
             'type' => 'nullable|string',
             'is_archived' => 'boolean',
             // briwa hadi dyal arrete
@@ -207,6 +211,7 @@ class UserController extends Controller
             $user->arreter = asset("storage/Arrete/{$user->id}.jpg");
             $user->save();
         }
+
         return response()->json($user);
     }
 
@@ -218,6 +223,7 @@ class UserController extends Controller
         // Supprimer un utilisateur
         $user = User::findOrFail($id);
         $user->delete();
+
         return response()->json(null, 204);
     }
 

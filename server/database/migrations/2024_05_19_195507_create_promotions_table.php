@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('promotions', function (Blueprint $table) {
-            $table->id(); 
-            $table->unsignedBigInteger('user_id'); 
-            $table->integer('echelon')->nullable(); 
-            $table->integer('echele')->nullable(); 
-            $table->integer('indice')->nullable(); 
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->integer('echelon')->nullable();
+            $table->integer('echele')->nullable();
+            $table->integer('indice')->nullable();
             $table->string('grade')->nullable();
-            $table->date('date')->nullable(); 
-            $table->timestamps(); 
+            $table->date('date')->nullable();
+            $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

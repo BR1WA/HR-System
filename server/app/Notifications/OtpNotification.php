@@ -2,31 +2,35 @@
 
 namespace App\Notifications;
 
+use Ichtrojan\Otp\Otp;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\App;
-use Ichtrojan\Otp\Otp;
 
 class OtpNotification extends Notification
 {
     use Queueable;
+
     public $message;
+
     public $subject;
+
     public $fromMail;
+
     public $mailer;
+
     public $otp;
+
     /**
      * Create a new notification instance.
      */
     public function __construct()
     {
-        $this->message = "use this code to authenticate";
-        $this->subject = "Otp Code";
-        $this->fromMail = "salaheddinezouitni00@.com";
-        $this->mailer=config('mail.default', 'smtp');
-        $this->otp=new Otp;
+        $this->message = 'use this code to authenticate';
+        $this->subject = 'Otp Code';
+        $this->fromMail = 'salaheddinezouitni00@.com';
+        $this->mailer = config('mail.default', 'smtp');
+        $this->otp = new Otp;
     }
 
     /**
@@ -34,7 +38,7 @@ class OtpNotification extends Notification
      *
      * @return array<int, string>
      */
-    public function via( $notifiable): array
+    public function via($notifiable): array
     {
         return ['mail'];
     }
@@ -42,15 +46,16 @@ class OtpNotification extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail( $notifiable): MailMessage
+    public function toMail($notifiable): MailMessage
     {
-        $otp = $this->otp->generate($notifiable->email,'numeric', 6, 60);
+        $otp = $this->otp->generate($notifiable->email, 'numeric', 6, 60);
+
         return (new MailMessage)
-                    ->mailer($this->mailer)
-                    ->subject($this->subject)
-                    ->greeting('Hello !')
-                    ->line($this->message)
-                    ->line("Otp code: ". $otp->token);
+            ->mailer($this->mailer)
+            ->subject($this->subject)
+            ->greeting('Hello !')
+            ->line($this->message)
+            ->line('Otp code: '.$otp->token);
     }
 
     /**
@@ -58,7 +63,7 @@ class OtpNotification extends Notification
      *
      * @return array<string, mixed>
      */
-    public function toArray( $notifiable): array
+    public function toArray($notifiable): array
     {
         return [
             //

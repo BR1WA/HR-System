@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('demandes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('type'); 
-            $table->date('date_debut')->nullable(); 
-            $table->date('date_fin')->nullable();  
-            $table->string('raison')->nullable(); 
-            $table->string('motif')->nullable(); 
+            $table->string('type');
+            $table->date('date_debut')->nullable();
+            $table->date('date_fin')->nullable();
+            $table->string('raison')->nullable();
+            $table->string('motif')->nullable();
             $table->string('destination_torab_lwatani')->nullable();
             $table->timestamps();
             // Définir la clé étrangère

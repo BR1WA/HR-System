@@ -1,7 +1,10 @@
 <?php
 
+use Ichtrojan\Otp\Otp;
+use Ichtrojan\Otp\OtpServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Permission\PermissionServiceProvider;
 
 return [
 
@@ -126,9 +129,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    
     'providers' => ServiceProvider::defaultProviders()->merge([
-        Spatie\Permission\PermissionServiceProvider::class,
+        PermissionServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -136,16 +138,11 @@ return [
         /*
          * Application Service Providers...
          */
-        Ichtrojan\Otp\OtpServiceProvider::class,
-    ])->toArray(),
-    
-    
-    'aliases' => Facade::defaultAliases()->merge([
-        'Otp' => Ichtrojan\Otp\Otp::class,
+        OtpServiceProvider::class,
     ])->toArray(),
 
-    
-    
-    
+    'aliases' => Facade::defaultAliases()->merge([
+        'Otp' => Otp::class,
+    ])->toArray(),
 
 ];
